@@ -389,26 +389,28 @@ void About() {
 
 	printf("***** PROYECTO FINAL PROGRESO 3 *****");
 	gotoxy(10,8);
-	printf("=> This Project Is About Medical Store ");
+	printf("=> Proyecto: Sistema de medicinas UMBRELLA CORP. ");
 	gotoxy(10,10);
-	printf("=> In This Project we Can Add Medicine ,Customer,Supplier Details");
+	printf("=> Integrantes: David Rueda, Sebastian Ramirez, Michael");
 	gotoxy(10,12);
-	printf("=> We Can Modifed & Delete Existing Record");
+	printf("=> MATERIA: Programacion 1");
 	gotoxy(10,14);
-	printf("=> We Can Also Search Medicine ,Customer,Supplier Details");
+	printf("=> FECHA PRESENTACION: 24-1-2023");
 	gotoxy(10,16);
-	printf("=> It's Helpfull For Display Stock Of Medicine ");
-
+	printf("=> VERSION: Ver 1.0.0 \n\n");
+	gotoxy(10,20);
 	printf("<<<<-Presiona 1 para regresar al Menu Principal->>>>");
 
 	c = (getche());
 
-	switch (c)      //This 'SWITCH' structure will ask the user for input from [1] to [7] and will display error on Invalid Entry.
+	switch (c)
 		{
-			case '1':Animation(); Main_Menu();
-				gotoxy(26,24);
-				puts("<<--ENTER FROM 1 PLEASE-->>");	//This message will only print on INVALID ENTRY and Will ask again for input.
-				getch();
+			case '1':
+			Animation(); 
+			Main_Menu();
+			gotoxy(26,24);
+			puts("<<--PRESIONA SOLAMENTE LA TECLA 1 PARA REGRESAR-->>");
+			getch();
 		}
 
 }   while(c != '1');
