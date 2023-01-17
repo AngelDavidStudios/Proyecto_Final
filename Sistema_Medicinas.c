@@ -23,7 +23,7 @@ int i;
 //int Get_Clientes_Id();
 //int Get_Proveedor_Id();
 
-//Procedimiento para Menu Principal
+//Funciones para Menu Principal
 void Welcome();
 void Main_Menu();
 
@@ -39,44 +39,32 @@ void Main_box();
 void Box1();
 void Wbox();
 
-/* 
-//Subemnu de Medicinas
 
+//Subemnu de Medicinas
 void medi_sale();
 void stock();
-void update_stock();
 void medi_entry();
 void medi_search();
-void Remain();
+//void Remain();
 
 //Subemnu de proovedores
-
 void supp_entry();
 void supp_list();
 void sup_update();
 void search();
-void search_id();
-void search_name();
 
 //Submenu Clientes
-
 void cust_search();
-void search_cid();
-void search_cname();
 void cust_entry();
 void cust_list();
 void cust_update();
 
 //Submenu de Reporte
-
-void report();
 void sale_rpt();
 void sale_rpt_daily();
 void profit_rpt();
 void pur_rpt();
 void pur_rpt_daily();
-*/
-
 
 //========================= Hora & Fecha ====================
 int t(void)
@@ -175,9 +163,9 @@ void Box1()
 //============================================================================
 void box()
 {
-   for(i=3;i<=79;i++) 	//This 'FOR' loop will print a combination of
+   for(i=3;i<=79;i++)
 	{
-		gotoxy(i,3);    //the 79th column is reached.
+		gotoxy(i,3);
 		printf("%c",219);
 		gotoxy(78,45);
 		printf("%c",219);
@@ -185,8 +173,8 @@ void box()
 		printf("%c",219);
 	}
 
-	for(i=3;i<=45;i++)      //This 'FOR' loop will print asterisks 'I'
-	{                       //vertically till the 3th row is reached.
+	for(i=3;i<=45;i++)      
+	{                       
 		gotoxy(3,i);
 		printf("%c",219);
 		gotoxy(79,i);
@@ -195,9 +183,9 @@ void box()
 }
 void Wbox()
 {
-	for(i=5;i<=75;i++) 	//This 'FOR' loop will print a combination of
+	for(i=5;i<=75;i++) 	
 	{
-		gotoxy(i,5);    //the 75th column is reached.
+		gotoxy(i,5);    
 		printf("%c",219);
 		gotoxy(74,40);
 		printf("%c",219);
@@ -205,8 +193,8 @@ void Wbox()
 		printf("%c",219);
 	}
 
-	for(i=5;i<=40;i++)      //This 'FOR' loop will print asteriks 'I'
-	{                       //vertically till the 17th row is reached.
+	for(i=5;i<=40;i++)      
+	{
 		gotoxy(5,i);
 		printf("%c",219);
 		gotoxy(75,i);
@@ -295,11 +283,11 @@ void Main_Menu() {
 		printf("Bienvenidos al sistema de medicinas ");
 		gotoxy(2,28);
 
-		//Remain();//this function is active when medicine qty is less then 10.
+		//Remain();
 		gotoxy(10,40);
 		printf("Selecciona");
 		gotoxy(10,42);
-		printf("Uno de los numeros [N] para acceder al submenu");
+		printf("Presione uno de los numeros [N] para acceder al submenu:   ");
 
 		Indice=toupper(getche());
 		switch(Indice)
@@ -354,20 +342,331 @@ void Main_Menu() {
 //======================== Submenu Proveedores =============================
 void Proveedores() {
 
+	int Index;
+	do
+	{
+	  system("cls");
+
+	  gotoxy(34,3);
+	  printf("----------------");
+	  gotoxy(35,4);
+	  printf("MENU Provedores");
+	  gotoxy(34,5);
+	  printf("----------------");
+
+	  gotoxy(26,11);
+	  printf("[1] Agregar nuevo Proveedor");
+
+	  gotoxy(26,15);
+	  printf("[2] Actualizar Proveedor");
+
+	  gotoxy(26,19);
+	  printf("[3] Buscar Proveedor");
+
+	  gotoxy(26,23);
+	  printf("[4] Lista de Proveedores");
+
+	  gotoxy(26,27);
+	  printf("[5] Regresar al Menu Principal");
+	  Main_box();
+
+	  gotoxy(10,40);
+	  printf("Presione la tecla numero para inicar la operacion:    ");
+
+
+	  Index= toupper(getche());
+	  switch(Index)
+	  {
+		case '1': 
+			Animation();
+			supp_entry();
+			break;
+		case '2':
+			Animation();
+			sup_update();
+			break;
+		case '3':
+			Animation();
+			supp_list();
+			break;
+		case '4':
+			Animation();
+			search();
+			break;
+		case '5':
+			Main_Menu();
+			break;
+		default:
+			gotoxy(11,34);
+			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5).");
+			getch();
+	  }
+	}while(Index!='6');
+
+}
+//======================== Submenu =============================
+void supp_entry() {
+
+}
+
+void sup_update() {
+
+}
+
+void supp_list() {
+
+}
+
+void search() {
+
 }
 
 //======================== Submenu Clientes =============================
 void Clientes() {
+
+	int Index;
+	do
+	{
+	  system("cls");
+
+	  gotoxy(34,3);
+	  printf("---------------");
+	  gotoxy(35,4);
+	  printf("MENU Clientes");
+	  gotoxy(34,5);
+	  printf("---------------");
+
+	  gotoxy(26,11);
+	  printf("[1] Agregar nuevo CLiente");
+
+	  gotoxy(26,15);
+	  printf("[2] Actualizar Cliente");
+
+	  gotoxy(26,19);
+	  printf("[3] Buscar CLientes");
+
+	  gotoxy(26,23);
+	  printf("[4] LIsta de clientes");
+
+	  gotoxy(26,27);
+	  printf("[5] Regresar al Menu Principal");
+	  Main_box();
+
+	  gotoxy(10,40);
+	  printf("Presione la tecla numero para inicar la operacion:    ");
+
+
+	  Index= toupper(getche());
+	  switch(Index)
+	  {
+		case '1':
+			Animation();
+			cust_entry();
+			break;
+		case '2':
+			Animation();
+			cust_update();
+			break;
+		case '3':
+			Animation();
+			cust_list();
+			break;
+		case '4':
+			Animation();
+			cust_search();
+			break;
+		case '5':
+			Main_Menu();
+			break;
+		default:
+			gotoxy(11,34);
+			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5).");
+			getch();
+	  }
+	}while(Index!='6');
+
+}
+
+//======================== Submenu =============================
+void cust_entry() {
+
+}
+
+void cust_update() {
+
+}
+
+void cust_list() {
+
+}
+
+void cust_search() {
 
 }
 
 //======================== Submenu Medicinas =============================
 void Medicinas() {
 
+	int Index;
+	do
+	{
+	  system("cls");
+
+	  gotoxy(34,3);
+	  printf("---------------");
+	  gotoxy(35,4);
+	  printf("MENU Medicinas.");
+	  gotoxy(34,5);
+	  printf("---------------");
+
+	  gotoxy(26,15);
+	  printf("[1] Agregar nuevas medicinas");
+
+	  gotoxy(26,19);
+	  printf("[2] Venta Medicinas");
+
+	  gotoxy(26,23);
+	  printf("[3] Stock de medicinas");
+
+	  gotoxy(26,27);
+	  printf("[4] Buscar Medicinas");
+
+	  gotoxy(26,31);
+	  printf("[5] Regresar al Menu Principal.");
+	  Main_box();
+
+	  gotoxy(10,40);
+	  printf("Presione la tecla numero para inicar la operacion:    ");
+
+
+	  Index= toupper(getche());
+	  switch(Index)
+	  {
+		case '1':
+			 medi_entry();
+			 break;
+		case '2':
+			 medi_sale();
+			 break;
+		case '3':
+			stock();
+			 break;
+		case '4':
+			medi_search();
+			break;
+		case '5':
+			Main_Menu();
+			break;
+		default:
+			gotoxy(11,34);
+			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5).");
+			getch();
+	  }
+	} while(Index!= 6);
+
+}
+//======================== Submenus =============================
+
+void medi_entry() {
+
+}
+
+void medi_sale() {
+
+}
+
+void stock() {
+
+}
+
+void medi_search(){
+
 }
 
 //======================== Submenu Reporte =============================
 void Reporte_Menu() {
+	int Index;
+	do
+	{
+	  system("cls");
+
+	  gotoxy(34,3);
+	  printf("---------------");
+	  gotoxy(35,4);
+	  printf("MENU Reporte");
+	  gotoxy(34,5);
+	  printf("---------------");
+
+	  gotoxy(26,12);
+	  printf("[1] Agregar nuevo Reporte");
+
+	  gotoxy(26,16);
+	  printf("[2] Reporte de ventas");
+
+	  gotoxy(26,20);
+	  printf("[3] Reporte del usuario");
+
+	  gotoxy(26,24);
+	  printf("[4] Reporte de ventas diarias");
+
+	  gotoxy(26,28);
+	  printf("[5] Reporte de compras diarias");
+
+	  gotoxy(26,32);
+	  printf("[6] Regresar el Menu Principal");
+	  Main_box();
+
+	  gotoxy(10,40);
+	  printf("Presione la tecla numero para inicar la operacion:    ");
+
+
+	  Index= toupper(getche());
+	  switch(Index)
+	  {
+		case '1':
+			pur_rpt();
+			break;
+		case '2':
+			sale_rpt();
+			break;
+		case '3':
+			sale_rpt_daily();
+			break;
+		case '4':
+			profit_rpt();
+			break;
+		case '5':
+			pur_rpt_daily();
+			break;
+		case '6':
+			Main_Menu();
+			break;
+		default:
+			gotoxy(11,34);
+			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5,6).");
+			getch();
+	  }
+	}while(Index!='7');
+}
+
+//======================== Submenu =============================
+void pur_rpt() {
+
+}
+
+void sale_rpt() {
+
+}
+
+void sale_rpt_daily() {
+
+}
+
+void profit_rpt() {
+
+}
+
+void pur_rpt_daily() {
 
 }
 
@@ -391,7 +690,7 @@ void About() {
 	gotoxy(10,8);
 	printf("=> Proyecto: Sistema de medicinas UMBRELLA CORP. ");
 	gotoxy(10,10);
-	printf("=> Integrantes: David Rueda, Sebastian Ramirez, Michael");
+	printf("=> Integrantes: David Rueda, Sebastian Ramirez, Michael, Joel Ibarra");
 	gotoxy(10,12);
 	printf("=> MATERIA: Programacion 1");
 	gotoxy(10,14);
