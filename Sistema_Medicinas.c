@@ -200,59 +200,6 @@ void linkfloat()
 	f=*p;
 }
 
-//=========================== Validacion de datos =========================
-void ventry(char t[],int code)
-{
-  int i=0;
-	if(code==0)
-	{
-		while((t[i]=getch())!='\r' && i<30)
-		if((t[i]>=97 && t[i]<=122) || (t[i]>=65 && t[i]<=90) || t[i]==32 || t[i]=='_')
-		{
-			printf("%c",t[i]);
-			i++;
-		}
-		else if(t[i]==8 && i>0)
-		{
-			printf("%c%c%c",8,32,8);
-			i--;              //Length counter is decremented.
-
-		}
-	}
-	else if(code==1)
-	{
-		while((t[i]=getch())!='\r' && i<10 )
-		if((t[i]>=48 && t[i]<=57) || t[i]==46 ||  t[i]=='-')
-		{
-			printf("%c",t[i]);
-			i++;
-		}
-		else if(t[i]==8 && i>0)
-		{
-			printf("%c%c%c",8,32,8);
-			i--;              //Length counter is decremented.
-
-		}
-	}
-	else if(code==2)
-	{
-		while((t[i]=getch())!='\r' && i<30 )
-		if((t[i]>=97 && t[i]<=122) || (t[i]>=65 && t[i]<=90) ||(t[i]>=48 && t[i]<=57) || t[i]==32 || t[i]==8 ||t[i]=='@'||t[i]=='.')
-		{
-			printf("%c",t[i]);
-			i++;
-		}
-		else if(t[i]==8 && i>0)
-		{
-			printf("%c%c%c",8,32,8);
-			i--;              //Length counter is decremented.
-
-		}
-	}
-
-	t[i]='\0';
-}
-
 //========================= PANTALLA DE BIENVENIDA ==============
 
 void Welcome()
@@ -610,13 +557,13 @@ void supp_entry() { 	// Agregar nuevos proovedores
 		printf("CORREO ELECTRONICO: ");
 
 		gotoxy(52,13);
-		ventry(temp1.supp_name,0);
+		gets(temp1.supp_name);
 
 		gotoxy(16,18);
-		ventry(temp1.city,0);
+		gets(temp1.city);
 
 		gotoxy(54,18);
-		ventry(temp1.mob_no,1);
+		gets(temp1.mob_no);
 
 		gotoxy(28,23);
 		gets(temp1.email);
