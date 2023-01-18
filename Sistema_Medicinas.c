@@ -45,7 +45,7 @@ void medi_sale();
 void stock();
 void medi_entry();
 void medi_search();
-//void Remain();
+void Remain();
 
 //Subemnu de proovedores
 void supp_entry();
@@ -87,21 +87,170 @@ int t(void)
 	return 0;
 }
 
-//======================= ANIMACIONES ==========================
-void Animation()
+//=================================== BASES DE DATOS =========================
+struct medical
 {
-	for (i=45; i>=1; i--)
-	{
-		Sleep(30);
-		gotoxy(1,i);
+	char id[6];
+	char medi_name[20];
+	int rack;
+	char cabnit[2];
+	int quantity;
+	float sale;
+	float total;
+	float unit;
+	float cost;
+	float profit;
+	float bye;
+	int qty;
+	char pur_date[15];
+	char exp_date[15];
+	char manu_date[15];
+	int bill_no;
+	char comp_name[20];
+	char supp_name[30];
+ };
 
-	}
-	for (i=1; i<=20; i++)
-	{
+struct medical temp;
+struct medical x[20];
+FILE *ptr;
 
-		Sleep(40);
-		gotoxy(1,i);
+char a[10];
+struct Proveedor
+{
+	int supp_id;
+	char supp_name[25];
+	char city[20];
+	char mob_no[11];
+	char email[30];
+
+};
+struct Proveedor temp1;
+
+struct Clientes
+{
+	int cust_id;
+	char cust_name[30];
+	char city[20];
+	char mob_no[11];
+	char email[50];
+
+};
+struct Clientes temp_cli;
+FILE *ptr1;
+
+struct Factura
+{
+	char billno[6];
+	char cname[30];
+	char mediname[30];
+	int medi_qty;
+	float medi_rate;
+	float total;
+	int day;
+	int month;
+	int year;
+
+};
+struct Factura temp_Fac;
+FILE *ptrbill;
+
+struct Reporte_Ventas
+{
+	char medi_id[6];
+	char medir_name[20];
+	char cust_name[30];
+	int sDay,sMonth,sYear;
+	int qty;
+	float rate;
+	float total;
+};
+struct Reporte_Ventas Temp_ReportV;
+FILE *ptrs_r;
+
+struct Rporte_Compras
+{
+	char medi_id[6];
+	char medir_name[20];
+	char supp_name[30];
+	int sDay,sMonth,sYear;
+	int qty;
+	float rate;
+	float total;
+};
+struct Rporte_Compras Temp_ReportC;
+FILE *ptrp_r;
+
+struct Reporte_Usuario
+{
+	char medi_id[6];
+	char medir_name[20];
+	int sDay,sMonth,sYear;
+	int qty;
+	float rate;
+	float unit;
+	float profit;
+};
+struct Reporte_Usuario Temp_ReportUser;
+FILE *ptrpr_r;
+
+void linkfloat()
+{
+	float f,*p;
+	p=&f;
+	f=*p;
+}
+
+//=========================== Validacion de datos =========================
+void ventry(char t[],int code)
+{
+  int i=0;
+	if(code==0)
+	{
+		while((t[i]=getch())!='\r' && i<30)
+		if((t[i]>=97 && t[i]<=122) || (t[i]>=65 && t[i]<=90) || t[i]==32 || t[i]=='_')
+		{
+			printf("%c",t[i]);
+			i++;
+		}
+		else if(t[i]==8 && i>0)
+		{
+			printf("%c%c%c",8,32,8);
+			i--;              //Length counter is decremented.
+
+		}
 	}
+	else if(code==1)
+	{
+		while((t[i]=getch())!='\r' && i<10 )
+		if((t[i]>=48 && t[i]<=57) || t[i]==46 ||  t[i]=='-')
+		{
+			printf("%c",t[i]);
+			i++;
+		}
+		else if(t[i]==8 && i>0)
+		{
+			printf("%c%c%c",8,32,8);
+			i--;              //Length counter is decremented.
+
+		}
+	}
+	else if(code==2)
+	{
+		while((t[i]=getch())!='\r' && i<30 )
+		if((t[i]>=97 && t[i]<=122) || (t[i]>=65 && t[i]<=90) ||(t[i]>=48 && t[i]<=57) || t[i]==32 || t[i]==8 ||t[i]=='@'||t[i]=='.')
+		{
+			printf("%c",t[i]);
+			i++;
+		}
+		else if(t[i]==8 && i>0)
+		{
+			printf("%c%c%c",8,32,8);
+			i--;              //Length counter is decremented.
+
+		}
+	}
+
+	t[i]='\0';
 }
 
 //========================= PANTALLA DE BIENVENIDA ==============
@@ -202,7 +351,7 @@ void Wbox()
 	}
 }
 
-//===========================main ===================
+//=========================== Main ===================
 
 int main()
 {
@@ -283,7 +432,7 @@ void Main_Menu() {
 		printf("Bienvenidos al sistema de medicinas ");
 		gotoxy(2,28);
 
-		//Remain();
+		Remain();
 		gotoxy(10,40);
 		printf("Selecciona");
 		gotoxy(10,42);
@@ -319,7 +468,6 @@ void Main_Menu() {
 			
                 if(ch=='Y')
 			    {
-				Animation();
 				system("cls");
 				gotoxy(35,20);
 				printf(" Por favor Espere.....");
@@ -378,19 +526,15 @@ void Proveedores() {
 	  switch(Index)
 	  {
 		case '1': 
-			Animation();
 			supp_entry();
 			break;
 		case '2':
-			Animation();
 			sup_update();
 			break;
 		case '3':
-			Animation();
 			supp_list();
 			break;
 		case '4':
-			Animation();
 			search();
 			break;
 		case '5':
@@ -404,9 +548,103 @@ void Proveedores() {
 	}while(Index!='6');
 
 }
-//======================== Submenu =============================
-void supp_entry() {
 
+//========================= Obtener ID Proveedor =======================
+int getsupp_id()
+{
+
+ FILE *fp;
+	 fp= fopen("Proveedor.dat","r");
+	 if(fp==NULL)
+	 {
+		gotoxy(22,15);
+		printf("No existen Datos.....");
+		getch();
+	 }
+	 else
+	 {
+		temp1.supp_id= 1000;
+		rewind(fp);
+		while(fscanf(fp,"%d %s %s %s %s",&temp1.supp_id,temp1.supp_name,temp1.city, temp1.mob_no,temp1.email)!=EOF)
+		{
+		}
+	 }
+	 fclose(fp);
+	 return temp1.supp_id+1;
+}
+//======================== Submenu =============================
+void supp_entry() { 	// Agregar nuevos proovedores
+	
+	char ch;
+ 	FILE *fp;
+ 		
+		system("cls");
+
+	   	fp=fopen("Proveedor.dat","a");
+	   	if(fp==NULL)
+	   	{
+			printf("\n No es posible abrir el archivo!!");
+			exit(0);
+	   	}
+
+		system("cls");
+		t();
+		box();
+		gotoxy(30,8);
+		printf(" Entrada Proveedores ");
+
+		gotoxy(8,13);
+		temp1.supp_id= getsupp_id();
+		printf("ID PROVEEDOR : %d ",temp1.supp_id);
+
+		gotoxy(39,13);
+		printf("NOMBRE PROV: ");
+
+		gotoxy(8,18);
+		printf("CIUDAD: ");
+
+		gotoxy(39,18);
+		printf("CONTACTO NO. : ");
+
+		gotoxy(8,23);
+		printf("CORREO ELECTRONICO: ");
+
+		gotoxy(52,13);
+		ventry(temp1.supp_name,0);
+
+		gotoxy(16,18);
+		ventry(temp1.city,0);
+
+		gotoxy(54,18);
+		ventry(temp1.mob_no,1);
+
+		gotoxy(28,23);
+		gets(temp1.email);
+
+		gotoxy(21,30);
+		printf("[S] GUARDAR");
+
+		gotoxy(38,30);
+		printf("[C] CANCELAR");
+
+		gotoxy(18,36);
+		printf("Presiona un tecla para ejecutar la operacion [S/C] : ");
+
+		ch= getch();
+
+		if(ch=='s' || ch=='S')
+		{
+			fprintf(fp,"%d %s %s %s %s\n\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
+			fprintf(fp,"\n");
+
+			system("cls");
+			gotoxy(20,20);
+			printf("Proveedor agregado con exito!!!!!");
+			Sleep(2000);
+			ch=getche();
+		}
+
+	   fclose(fp);
 }
 
 void sup_update() {
@@ -437,7 +675,7 @@ void Clientes() {
 	  printf("---------------");
 
 	  gotoxy(26,11);
-	  printf("[1] Agregar nuevo CLiente");
+	  printf("[1] Agregar nuevo Cliente");
 
 	  gotoxy(26,15);
 	  printf("[2] Actualizar Cliente");
@@ -446,7 +684,7 @@ void Clientes() {
 	  printf("[3] Buscar CLientes");
 
 	  gotoxy(26,23);
-	  printf("[4] LIsta de clientes");
+	  printf("[4] Lista de clientes");
 
 	  gotoxy(26,27);
 	  printf("[5] Regresar al Menu Principal");
@@ -460,19 +698,15 @@ void Clientes() {
 	  switch(Index)
 	  {
 		case '1':
-			Animation();
 			cust_entry();
 			break;
 		case '2':
-			Animation();
 			cust_update();
 			break;
 		case '3':
-			Animation();
 			cust_list();
 			break;
 		case '4':
-			Animation();
 			cust_search();
 			break;
 		case '5':
@@ -581,6 +815,22 @@ void stock() {
 
 void medi_search(){
 
+}
+
+//======================Recordatorio Stock de medicinas ===============
+void Remain()
+{
+	ptr1=fopen("Medical.dat","r");
+
+	while((fread(&temp,sizeof(temp),1,ptr1))==1)
+	{
+		if(temp.quantity<10)
+		{
+			gotoxy(10,45);
+			printf("%s : ",temp.medi_name);
+			printf("Recordatorio importante: Quedan en stock 10");
+		}
+	}
 }
 
 //======================== Submenu Reporte =============================
@@ -705,7 +955,6 @@ void About() {
 	switch (c)
 		{
 			case '1':
-			Animation(); 
 			Main_Menu();
 			gotoxy(26,24);
 			puts("<<--PRESIONA SOLAMENTE LA TECLA 1 PARA REGRESAR-->>");
