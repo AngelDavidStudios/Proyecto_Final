@@ -6,6 +6,7 @@
 #include<time.h>
 #include<ctype.h>
 #include<windows.h>
+#include<errno.h>
 
 COORD coord = {0, 0};
 
@@ -52,6 +53,8 @@ void supp_entry();
 void supp_list();
 void sup_update();
 void search();
+void search_id();
+void search_name();
 
 //Submenu Clientes
 void cust_search();
@@ -201,7 +204,6 @@ void linkfloat()
 }
 
 //========================= PANTALLA DE BIENVENIDA ==============
-
 void Welcome()
 {
  system("cls");
@@ -295,6 +297,40 @@ void Wbox()
 		printf("%c",219);
 		gotoxy(75,i);
 		printf("%c",219);
+	}
+}
+
+void lbox()
+{
+	gotoxy(25,6);
+	printf("%c",201);
+	for(i=26;i<55;i++)
+	{
+		gotoxy(i,6);
+		printf("%c",205);
+	}
+	gotoxy(55,6);
+	printf("%c",187);
+	gotoxy(25,6);
+	for(i=6;i<8;i++)
+	{
+		gotoxy(25,i+1);
+		printf("%c",186);
+	}
+	gotoxy(25,9);
+	printf("%c",200);
+	for(i=26;i<55;i++)
+	{
+		gotoxy(i,9);
+		printf("%c",205);
+	}
+	gotoxy(55,9);
+	printf("%c",188);
+	gotoxy(55,6);
+	for(i=6;i<8;i++)
+	{
+		gotoxy(55,i+1);
+		printf("%c",186);
 	}
 }
 
@@ -456,10 +492,10 @@ void Proveedores() {
 	  printf("[2] Actualizar Proveedor");
 
 	  gotoxy(26,19);
-	  printf("[3] Buscar Proveedor");
+	  printf("[3] Lista de Proveedores");
 
 	  gotoxy(26,23);
-	  printf("[4] Lista de Proveedores");
+	  printf("[4] Buscar Proveedores");
 
 	  gotoxy(26,27);
 	  printf("[5] Regresar al Menu Principal");
@@ -537,6 +573,7 @@ void supp_entry() { 	// Agregar nuevos proovedores
 		system("cls");
 		t();
 		box();
+		lbox();
 		gotoxy(30,8);
 		printf(" Entrada Proveedores ");
 
@@ -582,7 +619,6 @@ void supp_entry() { 	// Agregar nuevos proovedores
 		if(ch=='s' || ch=='S')
 		{
 			fprintf(fp,"%d %s %s %s %s\n\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
-			fprintf(fp,"\n");
 
 			system("cls");
 			gotoxy(20,20);
@@ -596,13 +632,306 @@ void supp_entry() { 	// Agregar nuevos proovedores
 
 void sup_update() {
 
+  	char Index;
+  	int sid;
+  	FILE *Temporal;
+	FILE *Original;
+
+  	system("cls");
+  	box();
+
+	   Original= fopen("Proveedor.dat","r+");
+	   if(Original==NULL )
+	   {
+		printf("\n\t Error, no se puede abrir este archivo!! ");
+		exit(0);
+	   }
+
+	   fclose(Original);
+	   remove("Proveedor.dat");
+
+	   lbox();
+	   gotoxy(30,8);
+	   printf(" Modificando Proveeedor ");
+
+	   gotoxy(12,13);
+	   printf("Introduzcca el ID del Proveedor:  ");
+	   scanf("%d",&sid);
+
+	    gotoxy(12,15);
+		Temporal= fopen("Temp.dat","w");
+		if(Temporal==NULL)
+		{
+			printf("Este archivo no se puede abrir");
+			exit(1);
+		}
+		else
+		{
+			while(fscanf(Original,"%d %s %s %s %s",&temp1.supp_id,temp1.supp_name,temp1.mob_no, temp1.city,temp1.email)!=EOF)
+			{
+				if(temp1.supp_id==sid)
+				{
+					gotoxy(18,17);
+					printf(" Registro existente  ");
+
+					gotoxy(10,19);
+					printf("%d\t %s \t%s \t%s \t%s",temp1.supp_id,temp1.supp_name,temp1.mob_no, temp1.city,temp1.email);
+
+					gotoxy(12,22);
+					printf("Introduzca un nuevo nombre       : ");
+					gets(temp1.supp_name);
+
+					gotoxy(12,24);
+					printf("Introduzca el numero de telefono  : ");
+					gets(temp1.mob_no);
+
+					gotoxy(12,26);
+					printf("Introduzca la ciudad       : ");
+					gets(temp1.city);
+
+					gotoxy(12,28);
+					printf("Introduzca el correo electronico      : ");
+					gets(temp1.email);
+
+					gotoxy(20,32);
+					printf("[U] Actualizar");
+
+					gotoxy(40,32);
+					printf("[C] Cancelar");
+
+					gotoxy(18,36);
+					printf("Presione una letra para ejecutar la operacion: ");
+					Index= getch();
+
+					if(Index=='u' || Index == 'U')
+					{
+					    fprintf(Temporal,"%d %s %s %s %s\n\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
+
+						system("cls");
+
+					    gotoxy(20,25);
+					    printf("Proveedor actualizado con exito...");
+						fclose(Temporal);
+	   					fclose(Original);
+						remove("Proveedor.dat");
+						//rename("Temp.dat","Proveedor.dat");
+						Index= getche();
+
+					}			
+				}
+			else
+			{
+				fprintf(Temporal,"%d %s %s %s %s\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
+				fflush(stdin);
+			}
+		}
+
+	   fclose(Temporal);
+	   fclose(Original);
+	   }
+
 }
 
 void supp_list() {
 
+char ch;
+system("cls");
+	   ptr1=fopen("Proveedor.dat","r");
+	   if(ptr1==NULL)
+	   {
+		printf("\n\t Error, no se puede abrir el archivo! ");
+		exit(0);
+	   }
+
+	   system("cls");
+	   box();
+
+	   gotoxy(8,48);
+	   printf(" Presione una tecla para regresar al MENU de PROVEEDORES !!!");
+	   lbox();
+
+	   gotoxy(30,8);
+	   printf(" LISTA DE PROVEEDORES ");
+
+	   gotoxy(5,10);
+	   printf("ID.  NOMBRE PROVEED.   CIUDAD.     TEL.NO.       EMAIL");
+
+	   gotoxy(4,12);
+	   i=14;
+	   printf("=================================================================");
+	   while(fscanf(ptr1,"%d %s %s %s %s",&temp1.supp_id,temp1.supp_name,temp1.city,temp1.mob_no,temp1.email)!=EOF)
+	   {
+		gotoxy(4,i);
+		printf(" %d",temp1.supp_id);
+		gotoxy(9,i);
+		printf(" %s",temp1.supp_name);
+		gotoxy(29,i);
+		printf(" %s",temp1.city);
+		gotoxy(41,i);
+		printf(" %s",temp1.mob_no);
+		gotoxy(54,i);
+		printf(" %s",temp1.email);
+		i=i+2;
+	   }
+	   getche();
 }
 
 void search() {
+	int Index;
+
+	do
+	 {
+	   system("cls");
+
+	   gotoxy(17,10);
+	   printf(" Filtros disponibles para la busqueda ");
+
+	   gotoxy(15,15);
+	   printf("[1] Buscar por [Numero ID]");
+
+	   gotoxy(15,18);
+	   printf("[2] Buscar por [Nombre]");
+
+	   gotoxy(15,21);
+	   printf("[3] Regresar");
+
+	   Main_box();
+	   gotoxy(17,24);
+	   printf("Presione un numero para ejecutar la operacion: ");
+
+	   Index= toupper(getche());
+	   switch(Index)
+	   {
+		case '1':
+			search_id();
+			break;
+		case '2':
+			search_name();
+			break;
+		case '3':
+			Proveedores();
+			break;
+		default:
+			gotoxy(22,29);
+			printf("Seleccionastes una tecla incorrecta!!!!!");
+			getch();
+	   }
+	   }while(Index!='9');
+
+}
+
+//======================== Busqueda por ID =============================
+void search_id() {
+
+	int id;
+  	FILE *fp;
+
+	   fp=fopen("Proveedor.dat","r");
+	   if(fp==NULL)
+	   {
+	     printf("Error, el archivo no puede abrirse!!!!");
+
+	   }
+	   system("cls");
+
+	   box();
+	   gotoxy(13,8);
+	   printf("Introduzca el codigo ID para buscar:");
+	   scanf("%d",&id);
+
+	   gotoxy(20,35);
+	   printf("Presione alguna tecla para regresar al MENU....");
+
+	   gotoxy(12,14);
+	   printf("ID.  NOMBRE PROVEED.   CIUDAD.     TEL.NO.       EMAIL");
+	   gotoxy(12,16);
+	   i=18;
+	   printf("==============================================================");
+	   while(fscanf(fp,"%d %s %s %s %s",&temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email)!=EOF)
+	   {
+		if(temp1.supp_id==id)
+		{
+			gotoxy(10,i);
+			printf(" %d",temp1.supp_id);
+
+			gotoxy(15,i);
+			printf(" %s",temp1.supp_name);
+
+			gotoxy(30,i);
+			printf(" %s",temp1.city);
+
+			gotoxy(40,i);
+			printf(" %s",temp1.mob_no);
+
+			gotoxy(53,i);
+			printf(" %s",temp1.email);
+			i++;
+			break;
+		}
+	   }
+	   if(temp1.supp_id!=id)
+	   {
+		gotoxy(20,30);
+		printf("Registro no encontrado!");
+	   }
+	   fclose(fp);
+	   getche();
+}
+
+//======================== Busqueda por nombre =============================
+void search_name() {
+
+	char name[20];
+  	FILE *fp;
+
+	   fp=fopen("Proveedor.dat","r");
+	   if(fp==NULL)
+	   {
+	     printf("Error, el archivo no puede abrirse!!!!");
+
+	   }
+	   system("cls");
+
+	   box();
+	   gotoxy(13,8);
+	   printf(" Introduzca el nombre para la busqueda : ");
+	   scanf("%s",&name);
+
+	   gotoxy(20,35);
+	   printf("Presione alguna tecla para regresar al MENU ....");
+
+	   gotoxy(12,14);
+	   printf("ID. SUPPLIER NAME.   CITY.     PH.NO.       EMAIL");
+
+	   gotoxy(12,16);
+	   i=18;
+	   printf("==============================================================");
+
+	   while(fscanf(fp,"%d %s %s %s %s",&temp1.supp_id,temp1.supp_name,temp1.mob_no, temp1.city,temp1.email)!=EOF)
+	   {
+		if(strcmp(temp1.supp_name,name)==0)
+		{
+			gotoxy(11,i);
+			printf(" %d",temp1.supp_id);
+			gotoxy(15,i);
+			printf(" %s",temp1.supp_name);
+			gotoxy(30,i);
+			printf(" %s",temp1.city);
+			gotoxy(40,i);
+			printf(" %s",temp1.mob_no);
+			gotoxy(53,i);
+			printf(" %s",temp1.email);
+			i++;
+			break;
+		}
+	   }
+	   if(strcmp(temp1.supp_name,name)!=0)
+	   {
+		gotoxy(20,30);
+		printf("Registro no encontrado!");
+	   }
+	   fclose(fp);
+	   getche();
 
 }
 
@@ -638,7 +967,7 @@ void Clientes() {
 	  Main_box();
 
 	  gotoxy(10,40);
-	  printf("Presione la tecla numero para inicar la operacion:    ");
+	  printf("Presione la tecla numero para iniciar la operacion:    ");
 
 
 	  Index= toupper(getche());
