@@ -647,9 +647,6 @@ void sup_update() {
 		exit(0);
 	   }
 
-	   fclose(Original);
-	   remove("Proveedor.dat");
-
 	   lbox();
 	   gotoxy(30,8);
 	   printf(" Modificando Proveeedor ");
@@ -714,7 +711,7 @@ void sup_update() {
 						fclose(Temporal);
 	   					fclose(Original);
 						remove("Proveedor.dat");
-						//rename("Temp.dat","Proveedor.dat");
+						rename("Temp.dat","Proveedor.dat");
 						Index= getche();
 
 					}			
@@ -773,7 +770,9 @@ system("cls");
 		printf(" %s",temp1.email);
 		i=i+2;
 	   }
+	   fclose(ptr1);
 	   getche();
+	   
 }
 
 void search() {
