@@ -61,6 +61,8 @@ void cust_search();
 void cust_entry();
 void cust_list();
 void cust_update();
+void search_cid();
+void search_cname();
 
 //Submenu de Reporte
 void sale_rpt();
@@ -335,7 +337,6 @@ void lbox()
 }
 
 //=========================== Main ===================
-
 int main()
 {
 	system("cls");
@@ -691,7 +692,7 @@ void sup_update() {
 					gets(temp1.email);
 
 					gotoxy(20,32);
-					printf("[U] Actualizar");
+					printf("[S] Actualizar");
 
 					gotoxy(40,32);
 					printf("[C] Cancelar");
@@ -700,7 +701,7 @@ void sup_update() {
 					printf("Presione una letra para ejecutar la operacion: ");
 					Index= getch();
 
-					if(Index=='u' || Index == 'U')
+					if(Index=='s' || Index == 'S')
 					{
 					    fprintf(Temporal,"%d %s %s %s %s\n\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
 
@@ -979,10 +980,10 @@ void Clientes() {
 			cust_update();
 			break;
 		case '3':
-			cust_list();
+			cust_search();			
 			break;
 		case '4':
-			cust_search();
+			cust_list();			
 			break;
 		case '5':
 			Main_Menu();
@@ -996,21 +997,387 @@ void Clientes() {
 
 }
 
+//========================= Obtener ID Cliente =======================
+int getcust_id()
+{
+
+ FILE *fp;
+	 fp= fopen("Clientes.dat","r");
+	 if(fp==NULL)
+	 {
+		gotoxy(22,15);
+		printf("No existen Datos.....");
+		getch();
+	 }
+	 else
+	 {
+		temp_cli.cust_id=1000;
+		rewind(fp);
+		while(fscanf(fp,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+		{
+		}
+	 }
+	 fclose(fp);
+	 return temp_cli.cust_id+1;
+}
 //======================== Submenu =============================
 void cust_entry() {
+
+	char ch;
+ 	int id;
+ 	FILE *fp;
+ 	system("cls");
+
+	   fp=fopen("Clientes.dat","a");
+
+	   if(fp==NULL)
+	   {
+		printf("\n No se puede abrir el archivo!!");
+		exit(0);
+	   }
+
+	   system("cls");
+
+	   ch='y';
+	   while(ch=='y')
+	   {
+		system("cls");
+
+		t();
+		box();
+		lbox();
+		gotoxy(30,8);
+		printf(" ENTRADA CLIENTES ");
+
+		gotoxy(8,13);
+		temp_cli.cust_id=getcust_id();
+		printf("ID CLIENTE :%d",temp_cli.cust_id);
+
+		gotoxy(39,13);
+		printf("NOMBRE CLIENTE: ");
+
+		gotoxy(8,18);
+		printf("CIUDAD: ");
+
+		gotoxy(39,18);
+		printf("CONTACTO NO. : ");
+
+		gotoxy(8,23);
+		printf("CORREO ELECTRONICO: ");
+
+		gotoxy(55,13);
+		gets(temp_cli.cust_name);
+
+		gotoxy(16,18);
+		gets(temp_cli.city);
+
+		gotoxy(54,18);
+		gets(temp_cli.mob_no);
+
+		gotoxy(28,23);
+		gets(temp_cli.email);
+
+		gotoxy(21,30);
+		printf("[S] GUARDAR");
+
+		gotoxy(38,30);
+		printf("[C] CANCELAR");
+
+		gotoxy(18,36);
+		printf("Presiona un tecla para ejecutar la operacion [S/C] : ");
+		ch=getch();
+		if(ch=='s' || ch=='S')
+		{
+			fprintf(fp,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
+
+			system("cls");
+			gotoxy(20,20);
+			printf("Proveedor agregado con exito!!!!!");
+			Sleep(2000);
+			ch= getche();
+
+		}
+	   }
+	   fclose(fp);
 
 }
 
 void cust_update() {
+	int i;
+  	char ch;
+  	int cid;
+  	FILE *ft;
+  
+  	system("cls");
+  	box();
+	   ptr1=fopen("Clientes.dat","r+");
 
+	   if(ptr1==NULL)
+	   {
+		printf("\n\t Este archivo no se puede abrir!! ");
+		exit(0);
+	   }
+
+	   lbox();
+	   gotoxy(30,8);
+	   printf(" Modificando cliente ");
+
+	   gotoxy(12,13);
+	   printf("Introduzca el ID del cliente : ");
+	   scanf("%d",&cid);
+	   gotoxy(12,15);
+
+		ft=fopen("TempCli.dat","w");
+		if(ft==NULL)
+		{
+			printf("\n Este archivo no se puede abrir");
+			exit(0);
+		}
+		else
+		{
+
+			while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+			{
+				if(temp_cli.cust_id==cid)
+				{
+					gotoxy(25,17);
+					printf("*** Existing Record ***");
+					gotoxy(10,19);
+					printf("%d\t %s \t%s \t%s \t%s",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
+					
+					gotoxy(12,22);
+					printf("Introduzca el nuevo nombre         : ");
+					gets(temp_cli.cust_name);
+
+					gotoxy(12,24);
+					printf("Introduzca el numero de celular    : ");
+					gets(temp_cli.mob_no);
+
+					gotoxy(12,26);
+					printf("Introduzca la ciudad         : ");
+					gets(temp_cli.city);
+
+					gotoxy(12,28);
+					printf("Introduzca el correo electronico        : ");
+					scanf("%s",temp_cli.email);
+
+					gotoxy(20,32);
+					printf("[S] Actualizar");
+
+					gotoxy(40,32);
+					printf("[C] Cancelar");
+
+					gotoxy(18,35);
+					printf("Presione una letra para ejecutar la operacion: ");
+					ch=getche();
+
+					if(ch=='s' || ch=='S')
+					{
+					fprintf(ft,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
+
+					gotoxy(20,36);
+					printf("Customer updated successfully...");
+					fclose(ft);
+	   				fclose(ptr1);
+					remove("Clientes.dat");
+					rename("TempCli.dat","Clientes.dat");
+					}					}
+					else
+					{
+					fprintf(ft,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
+					fflush(stdin);
+					}
+				  }
+
+	   fclose(ft);
+	   fclose(ptr1);
+      }
 }
 
 void cust_list() {
+	char ch;
+ 	system("cls");
+	   ptr1=fopen("Clientes.dat","r");
+	   if(ptr1==NULL)
+	   {
+		printf("\n\t Error, no se puede abrir el archivo! ");
+		exit(0);
+	   }
+
+	   system("cls");
+	   box();
+
+	   gotoxy(8,48);
+	   printf(" Presione una tecla para regresar al MENU de CLIENTES !!!");
+	   lbox();
+
+	   gotoxy(30,8);
+	   printf(" LISTA CLIENTES ");
+	   i=14;
+	   gotoxy(5,10);
+	   printf(" ID. NOMBRE CLIENTE.    CIUDAD.     TELF.NO.      EMAIL");
+	   gotoxy(4,12);
+	   printf("==============================================================");
+	   while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+	   {
+		gotoxy(4,i);
+		printf(" %d",temp_cli.cust_id);
+		gotoxy(11,i);
+		printf(" %s",temp_cli.cust_name);
+		gotoxy(28,i);
+		printf(" %s",temp_cli.city);
+		gotoxy(40,i);
+		printf(" %s",temp_cli.mob_no);
+		gotoxy(53,i);
+		printf(" %s",temp_cli.email);
+		i=i+2;
+	   }
+	   getche();
+	   fclose(ptr1);
 
 }
 
 void cust_search() {
+	int Index;
 
+	do
+	 {
+	   system("cls");
+
+	   gotoxy(17,10);
+	   printf(" Filtros disponibles para la busqueda ");
+
+	   gotoxy(15,15);
+	   printf("[1] Buscar por [Numero ID]");
+
+	   gotoxy(15,18);
+	   printf("[2] Buscar por [Nombre]");
+
+	   gotoxy(16,21);
+	   printf("[3] Regresar");
+
+	   Main_box();
+	   gotoxy(17,24);
+	   printf("Presione un numero para ejecutar la operacion: ");
+
+	   Index= toupper(getche());
+	   switch(Index)
+	   {
+		case '1':
+			search_cid();
+			break;
+		case '2':
+			search_cname();
+			break;
+		case '3':
+			Clientes();
+			break;
+		default:
+			gotoxy(22,18);
+			printf("Seleccionastes una tecla incorrecta!!!!!");
+			getch();
+	   }
+	   }while(Index!='R');
+       getche();
+}
+
+//======================== Busqueda por ID =============================
+void search_cid() {
+	int id;
+	FILE *fp;
+
+  	system("cls");
+  	box();
+	   fp=fopen("Clientes.dat","r");
+	   	if(fp==NULL)
+	   {
+	     printf("Error, el archivo no puede abrirse!!!!");
+	   }
+
+	   gotoxy(13,8);
+	   printf("Introduzca el codigo ID para buscar:");
+	   scanf("%d",&id);
+
+		gotoxy(20,35);
+		printf("Presione alguna tecla para regresar al MENU....");
+
+	   gotoxy(9,15);
+	   printf(" ID. NOMBRE CLIENTE.    CIUDAD.     TELF.NO.      EMAIL");
+	   gotoxy(8,16);
+	   i= 18;
+	   printf("==============================================================");
+	   while(fscanf(fp,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+	   {
+		if(temp_cli.cust_id==id)
+		{
+			gotoxy(8,i);
+			printf(" %d",temp_cli.cust_id);
+			gotoxy(15,i);
+			printf(" %s",temp_cli.cust_name);
+			gotoxy(28,i);
+			printf(" %s",temp_cli.city);
+			gotoxy(40,i);
+			printf(" %s",temp_cli.mob_no);
+			gotoxy(54,i);
+			printf(" %s",temp_cli.email);
+			break;
+		}
+	   }
+	   if(temp_cli.cust_id!=id)
+	   {
+		gotoxy(20,30);
+		printf("Registro no encontrado!");
+	   }
+	   fclose(fp);
+       getche();
+
+}
+//======================== Busqueda por Nombre =============================
+void search_cname() {
+
+	char name[20];
+
+  	system("cls");
+  	box();
+	   ptr1=fopen("Clientes.dat","r");
+	   
+	   gotoxy(12,8);
+	   printf("Introduzca el nombre del cliente para buscar:");
+	   scanf("%s",&name);
+	   i=18;
+
+	   gotoxy(9,15);
+	   printf("ID. NOMBRE CLIENTE.    CIUDAD.     TELF.NO.      EMAIL");
+
+	   gotoxy(8,16);
+	   printf("==============================================================");
+	   while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+	   {
+		if(strcmp(temp_cli.cust_name,name)==0)
+		{
+			gotoxy(8,i);
+			printf(" %d",temp_cli.cust_id);
+			gotoxy(15,i);
+			printf(" %s",temp_cli.cust_name);
+			gotoxy(28,i);
+			printf(" %s",temp_cli.city);
+			gotoxy(40,i);
+			printf(" %s",temp_cli.mob_no);
+			gotoxy(54,i);
+			printf(" %s",temp_cli.email);
+
+			gotoxy(20,35);
+			printf("Presione alguna tecla para regresar al MENU....");
+			break;
+		}
+	   }
+	   if(strcmp(temp_cli.cust_name,name)!=0)
+	   {
+		gotoxy(5,10);
+		printf("Registro no encontrado!");
+	   }
+	fclose(ptr1);
+	getche();
 }
 
 //======================== Submenu Medicinas =============================
