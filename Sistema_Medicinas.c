@@ -1,12 +1,11 @@
 #include<stdio.h>
 #include<conio.h>
-#include<string.h>
+//#include<string.h>
 #include<math.h>
-#include<dos.h>
+//#include<dos.h>
 #include<time.h>
-#include<ctype.h>
+//#include<ctype.h>
 #include<windows.h>
-#include<errno.h>
 
 COORD coord = {0, 0};
 
@@ -20,9 +19,11 @@ void gotoxy(int x, int y)
 
 int i;
 
-//function for auto increment customer & supplier Id.
-//int Get_Clientes_Id();
-//int Get_Proveedor_Id();
+int getcust_id();
+int getsupp_id();
+
+//Tiempo Local
+void t();
 
 //Funciones para Menu Principal
 void Welcome();
@@ -31,7 +32,6 @@ void Main_Menu();
 void Proveedores();
 void Clientes();
 void Medicinas();
-void Reporte_Menu();
 void Bill();
 void About();
 
@@ -46,6 +46,7 @@ void medi_sale();
 void stock();
 void medi_entry();
 void medi_search();
+void update_stock();
 void Remain();
 
 //Subemnu de proovedores
@@ -64,15 +65,8 @@ void cust_update();
 void search_cid();
 void search_cname();
 
-//Submenu de Reporte
-void sale_rpt();
-void sale_rpt_daily();
-void profit_rpt();
-void pur_rpt();
-void pur_rpt_daily();
-
 //========================= Hora & Fecha ====================
-int t(void)
+void t()
 {
 
     time_t t = time(NULL);
@@ -89,7 +83,6 @@ int t(void)
 	    printf("FECHA: %s", Fecha);
     gotoxy(55,48);
         printf("HORA: %s", Hora);
-	return 0;
 }
 
 //=================================== BASES DE DATOS =========================
@@ -159,52 +152,6 @@ struct Factura
 struct Factura temp_Fac;
 FILE *ptrbill;
 
-struct Reporte_Ventas
-{
-	char medi_id[6];
-	char medir_name[20];
-	char cust_name[30];
-	int sDay,sMonth,sYear;
-	int qty;
-	float rate;
-	float total;
-};
-struct Reporte_Ventas Temp_ReportV;
-FILE *ptrs_r;
-
-struct Rporte_Compras
-{
-	char medi_id[6];
-	char medir_name[20];
-	char supp_name[30];
-	int sDay,sMonth,sYear;
-	int qty;
-	float rate;
-	float total;
-};
-struct Rporte_Compras Temp_ReportC;
-FILE *ptrp_r;
-
-struct Reporte_Usuario
-{
-	char medi_id[6];
-	char medir_name[20];
-	int sDay,sMonth,sYear;
-	int qty;
-	float rate;
-	float unit;
-	float profit;
-};
-struct Reporte_Usuario Temp_ReportUser;
-FILE *ptrpr_r;
-
-void linkfloat()
-{
-	float f,*p;
-	p=&f;
-	f=*p;
-}
-
 //========================= PANTALLA DE BIENVENIDA ==============
 void Welcome()
 {
@@ -259,8 +206,6 @@ void Box1()
 		printf("%c",186);
 	}
 }
-
-//============================================================================
 void box()
 {
    for(i=3;i<=79;i++)
@@ -301,7 +246,6 @@ void Wbox()
 		printf("%c",219);
 	}
 }
-
 void lbox()
 {
 	gotoxy(25,6);
@@ -335,16 +279,6 @@ void lbox()
 		printf("%c",186);
 	}
 }
-
-//=========================== Main ===================
-int main()
-{
-	system("cls");
-
-    Welcome();
-    Main_Menu();
-}
-
 void Main_box()
 {
 	gotoxy(1,6);
@@ -380,6 +314,15 @@ void Main_box()
 	}
 }
 
+//=========================== MAIN ===================
+int main()
+{
+	system("cls");
+
+    Welcome();
+    Main_Menu();
+}
+
 void Main_Menu() {
     int Indice;
     char ch;
@@ -388,26 +331,23 @@ void Main_Menu() {
 	{
 		system("cls");
 
-		gotoxy(3,5);
-		printf("[1]Proveed.");
+		gotoxy(4,5);
+		printf("[1] Proveed.");
 
-		gotoxy(15,5);
-		printf("[2]Clientes");
+		gotoxy(17,5);
+		printf("[2] Clientes");
 
-		gotoxy(27,5);
-		printf("[3]Medicinas");
+		gotoxy(31,5);
+		printf("[3] Medicinas");
 
-		gotoxy(40,5);
-		printf("[4]Reporte");
+		gotoxy(46,5);
+		printf("[4] Factura");
 
-		gotoxy(51,5);
-		printf("[5]Factura");
+		gotoxy(59,5);
+		printf("[5] About");
 
-		gotoxy(62,5);
-		printf("[6]About");
-
-		gotoxy(71,5);
-		printf("[7]Salir");
+		gotoxy(70,5);
+		printf("[6] Salir");
 
 		t();   //DESPLIEGUE FECHA Y HORA
 		Box1();
@@ -435,15 +375,12 @@ void Main_Menu() {
                 Medicinas();
 				break;
 			case '4': 
-                Reporte_Menu();
-				break;
-			case '5': 
                 Bill();
 				break;
-			case '6': 
+			case '5': 
                 About();
 				break;
-			case '7': 
+			case '6': 
                 gotoxy(23,20);
 			    printf("Desea Salir del Sistema? Y/N :");
 			    Sleep(100);
@@ -465,10 +402,10 @@ void Main_Menu() {
 
 			default:
 			gotoxy(11,34);
-			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5,6,7).");
+			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5,6).");
 			getch();
 		}
-	}   while(Indice!='7');
+	}   while(Indice!='6');
 }
 
 //======================== Submenu Proveedores =============================
@@ -1445,17 +1382,402 @@ void Medicinas() {
 
 void medi_entry() {
 
+	char ch,id[6];
+
+	time_t t = time(0);
+    struct tm * now = localtime( & t );
+
+  	int f;
+  	FILE *fp;
+
+  	system("cls");
+
+	  ch='Y';
+	  while(ch=='Y')
+	  {
+		system("cls");
+
+		box();
+		lbox();
+
+		gotoxy(30,8);
+		printf(" COMPRA MEDICINA  ");
+		{
+			gotoxy(7,11);
+			printf("ID MEDICINA    : ");
+
+			gotoxy(40,11);
+			printf("NOMBRE MEDICINA  : ");
+
+			gotoxy(7,14);
+			printf("NO. ESTANTERIA  : ");
+
+			gotoxy(40,14);
+			printf("NO. GABINETE      : ");
+
+			gotoxy(7,18);
+			printf("NOMBRE COMPANIA  : ");
+
+			gotoxy(40,18);
+			printf("NOMBRE PROVEEDOR : ");
+
+			gotoxy(7,21);
+			printf("COSTO/UNIDAD   Rs.:  ");
+
+			gotoxy(40,21);
+			printf("COSTO VENTA   Rs.: ");
+
+			gotoxy(7,24);
+			printf("CANTIDAD       :  ");
+
+			gotoxy(7,27);
+			printf("MFG.DATE(dd-mm-yyyy): ");
+
+			gotoxy(7,29);
+			printf("EXP.DATE(dd-mm-yyyy): ");
+
+			gotoxy(25,11);
+			gets(temp.id);
+			strcpy(id,temp.id);
+
+			fp= fopen("Medical.dat","r");
+
+			while((fread(&temp,sizeof(temp),1,fp))==1)
+			{
+
+			if(strcmp(id,temp.id)==0)
+			{
+				f=1;
+				break;
+			}
+
+			}
+			fclose(fp);
+
+			if(f==1)
+			{
+				gotoxy(20,31);
+				printf("Este ID Ya existe");
+				getche();
+				system("cls");
+				medi_entry();
+			}
+
+			else
+
+			{
+			ptr=fopen("Medical.dat","a+");
+			strcpy(temp.id,id);
+			}
+
+			gotoxy(59,11);
+			gets(temp.medi_name);
+
+			gotoxy(25,14);
+			gets(a);
+			temp.rack= atoi(a);
+
+			gotoxy(60,14);
+			gets(temp.cabnit);
+
+			gotoxy(26,18);
+			gets(temp.comp_name);
+
+			gotoxy(59,18);
+			gets(temp.supp_name);
+
+			gotoxy(27,21);
+			gets(a);
+			temp.unit= atof(a);
+
+			gotoxy(59,21);
+			gets(a);
+			temp.sale= atof(a);
+
+			gotoxy(25,24);
+			gets(a);
+			temp.quantity= atoi(a);
+
+			gotoxy(29,27);
+			gets(temp.manu_date);
+
+			gotoxy(29,29);
+			gets(temp.exp_date);
+
+			gotoxy(7,31);
+			printf("==========================================================");
+			temp.total= temp.quantity * temp.sale;
+
+			gotoxy(10,33);
+			printf("COSTO DE VENTA TOTAL = %.2f",temp.total);
+			temp.cost=(temp.unit*temp.quantity);
+
+			gotoxy(40,33);
+			printf("COSTE TOTAL POR UNIDAD =  %.2f",temp.cost);
+		 }
+
+		gotoxy(21,35);
+		printf("[S] Guardar");
+
+		gotoxy(35,35);
+		printf("[C] Cancelar");
+
+		gotoxy(18,38);
+		printf("Presiona alguna tecla para la operacion : ");
+
+		ch= toupper(getche());
+
+			if(ch=='S' || ch=='s')
+			{
+				fwrite(&temp,sizeof(temp),1,ptr);
+				fflush(stdin);				
+				system("cls");
+				
+				gotoxy(20,20);
+				printf("Medicina agregada con exito!!!!!!");
+
+				ch= toupper(getche());
+			}
+	   }
+	   fclose(ptr);
 }
 
 void medi_sale() {
+	struct Factura temp_Fac;
 
+		time_t t = time(NULL);
+    	struct tm tiempoLocal = *localtime(&t);
+
+    	char Fecha[70];
+    	char *FormatoFecha = "%Y-%m-%d";
+    	int EstructuraFecha = strftime(Fecha, sizeof Fecha, FormatoFecha, &tiempoLocal);
+
+  	int j,n,i,a,billno;
+  	int d1,m,y;
+  	float b,total,rate;
+  	char tar[30],ch,mediname[30],c_name[30],cname[30];
+  	FILE *fp,*fpc;
+
+	   ch='y';
+	   while(ch=='y')
+	   {
+		fp = fopen("Factura.dat","a");
+		ptr1 = fopen("Clientes.dat","r");
+		ptr = fopen("Medical.dat","r");
+
+		system("cls");
+
+		box();
+		
+		//Division Vertical
+		for(i=3;i<=45;i++)
+		{
+		gotoxy(50,i);
+		printf("%c",219);
+		}
+
+		i=9;
+
+		gotoxy(52,7);
+		printf("Cli_ID    Nombre_Cli");
+		while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+		{
+			gotoxy(53,i);
+			printf("%d",temp_cli.cust_id);
+
+			gotoxy(64,i);
+			printf("%s",temp_cli.cust_name);
+			i+=2;
+		}
+
+		gotoxy(9,7);
+		printf("INTRODUZCA ID DE LA MEDICINA : ");
+		gets(tar);
+		j=0;
+
+		while((fread(&temp,sizeof(temp),1,ptr))==1)
+		{
+			if((strcmp(temp.id,tar)<0) || (strcmp(temp.id,tar)>0))
+			{
+
+			}
+			else if((strcmp(temp.id,tar)==0))
+			{
+
+				gotoxy(8,10);
+				printf(" Nombre Medicina        : %s",temp.medi_name);
+
+				gotoxy(8,12);
+				printf(" Cantidad en Stock    : %d",temp.quantity);
+
+				gotoxy(8,14);
+				printf(" Precio Venta          : %.2f",temp.sale);
+
+				gotoxy(8,16);
+				printf("Introduzca No Factura     : ");
+				gets(temp_Fac.billno);
+
+				gotoxy(8,18);
+				printf("Introduzca nombre del cliente   : ");
+
+				gets(c_name);
+				gotoxy(8,20);
+				printf("Cantidad deseada : ");
+				scanf("%d",&a);
+
+				gotoxy(10,30);
+				printf("[S] GUARDAR");
+
+				gotoxy(17,30);
+				printf("[C] CANCELAR");
+
+				gotoxy(17,36);
+				printf("Presiona un tecla [S/C] : ");
+
+				ch= getch();
+
+				if(ch=='s' || ch=='S')
+				{
+					fprintf(fp,"%s %s %s %d %.2f %.2f %d %d %d\n",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,temp_Fac.medi_qty,temp_Fac.medi_rate,temp_Fac.total,temp_Fac.day,temp_Fac.month,temp_Fac.year);
+					strcpy(temp_Fac.cname,c_name);
+					strcpy(temp_Fac.mediname,temp.medi_name);
+					temp_Fac.medi_qty=a;
+					temp_Fac.medi_rate=temp.sale;
+					temp_Fac.total=temp.sale*a;
+
+					system("cls");
+					gotoxy(20,20);
+					printf("Compra de medicina realizada con exito!!!!!");
+					ch=getche();
+				}
+				fclose(fp);
+			}
+		}
+		fclose(ptr1);
+		fclose(ptr);
+	   }
 }
 
 void stock() {
 
+	char ch;
+	int i, Index;
+	   do
+	   {
+		system("cls");
+
+		ptr1=fopen("Medical.dat","r");
+		if(ptr1==NULL)
+		{
+			printf("\n\t Error no se puede abrir el archivo! ");
+			exit(1);
+		}
+		system("cls");
+
+		box();
+		lbox();
+		gotoxy(30,8);
+
+		printf(" STOCK MEDICINA ");
+		i=14;
+
+		gotoxy(9,10);
+		printf("ID.   NOMBRE MEDICINA.    QTY     NOMBRE PROVE.     Exp.Fecha");
+		gotoxy(9,12);
+		printf("==================================================================\n");
+
+		while((fread(&temp,sizeof(temp),1,ptr1))==1)
+		{
+			gotoxy(9,i);
+			printf(" %s",temp.id);
+			gotoxy(15,i);
+			printf(" %s",temp.medi_name);
+			gotoxy(32,i);
+			printf(" %d",temp.quantity);
+			gotoxy(43,i);
+			printf(" %s",temp.supp_name);
+			gotoxy(60,i);
+			printf(" %s",temp.exp_date);
+			i++;
+		}
+		gotoxy(10,42);
+		printf("Presiona [1] para actualizar stock & [0] para regresar al Menu ");
+		Index = (getche());
+		switch (Index)
+		{
+			case '0':
+				Main_Menu();
+				 break;
+			case '1':
+				update_stock();
+				 break;
+		}
+
+	   }while(Index != '1');
+	   getche();
 }
 
 void medi_search(){
+
+	char EnterID[6];
+  	int i;
+  	system("cls");
+	   ptr1=fopen("Medical.dat","r");
+
+	   if(ptr1==NULL)
+	   {
+		printf("\n\t Error no se puede abrir el archivo! ");
+		exit(0);
+	   }
+
+	   system("cls");
+	   box();
+
+	   gotoxy(10,7);
+	   printf("Introduzca el ID de la medicina para buscar : ");
+	   scanf("%s",&EnterID);
+
+	   system("cls");
+	   box();
+	   lbox();
+
+	   gotoxy(30,8);
+	   printf(" MEDICINA ");
+	   i=14;
+
+	   gotoxy(9,10);
+	   printf("ID.   NOMBRE MEDICINA.    QTY     NOMBRE PROVE.     Exp.Fecha");
+	   gotoxy(9,12);
+	   printf("==================================================================\n");
+	   while((fread(&temp,sizeof(temp),1,ptr1))==1)
+	   {
+		if(strcmp(EnterID,temp.id)==0)
+		{
+			gotoxy(9,i);
+			printf(" %s",temp.id);
+			gotoxy(15,i);
+			printf(" %s",temp.medi_name);
+			gotoxy(32,i);
+			printf(" %d",temp.quantity);
+			gotoxy(43,i);
+			printf(" %s",temp.supp_name);
+			gotoxy(60,i);
+			printf(" %s",temp.exp_date);
+			i++;
+			break;
+		}
+
+	   }
+	   if(strcmp(EnterID,temp.id)!=0)
+	   {
+		gotoxy(20,20);
+		printf("No esta en Stock.....");
+	   }
+	   getche();
+
+}
+//======================Actualizar Stock de medicinas ===============
+void update_stock() {
 
 }
 
@@ -1475,95 +1797,89 @@ void Remain()
 	}
 }
 
-//======================== Submenu Reporte =============================
-void Reporte_Menu() {
-	int Index;
-	do
-	{
-	  system("cls");
-
-	  gotoxy(34,3);
-	  printf("---------------");
-	  gotoxy(35,4);
-	  printf("MENU Reporte");
-	  gotoxy(34,5);
-	  printf("---------------");
-
-	  gotoxy(26,12);
-	  printf("[1] Agregar nuevo Reporte");
-
-	  gotoxy(26,16);
-	  printf("[2] Reporte de ventas");
-
-	  gotoxy(26,20);
-	  printf("[3] Reporte del usuario");
-
-	  gotoxy(26,24);
-	  printf("[4] Reporte de ventas diarias");
-
-	  gotoxy(26,28);
-	  printf("[5] Reporte de compras diarias");
-
-	  gotoxy(26,32);
-	  printf("[6] Regresar el Menu Principal");
-	  Main_box();
-
-	  gotoxy(10,40);
-	  printf("Presione la tecla numero para inicar la operacion:    ");
-
-
-	  Index= toupper(getche());
-	  switch(Index)
-	  {
-		case '1':
-			pur_rpt();
-			break;
-		case '2':
-			sale_rpt();
-			break;
-		case '3':
-			sale_rpt_daily();
-			break;
-		case '4':
-			profit_rpt();
-			break;
-		case '5':
-			pur_rpt_daily();
-			break;
-		case '6':
-			Main_Menu();
-			break;
-		default:
-			gotoxy(11,34);
-			printf("Por favor solo ingresar los siguientes numeros (1,2,3,4,5,6).");
-			getch();
-	  }
-	}while(Index!='7');
-}
-
-//======================== Submenu =============================
-void pur_rpt() {
-
-}
-
-void sale_rpt() {
-
-}
-
-void sale_rpt_daily() {
-
-}
-
-void profit_rpt() {
-
-}
-
-void pur_rpt_daily() {
-
-}
-
 //======================== Submenu Facturas =============================
 void Bill() {
+
+		time_t t = time(NULL);
+    	struct tm tiempoLocal = *localtime(&t);
+
+    	char Fecha[70];
+    	char *FormatoFecha = "%Y-%m-%d";
+    	int EstructuraFecha = strftime(Fecha, sizeof Fecha, FormatoFecha, &tiempoLocal);
+
+	   FILE *F_Factura;
+	   char id[6];
+	   int j=1,d1,m,y,k;
+	   float netamt=0.0;
+
+	   system("cls");
+	   F_Factura=fopen("Factura.dat","r");
+
+	   gotoxy(13,4);
+	   printf("Introduzca No Factura: ");
+	   scanf("%s",&id);
+
+	   system("cls");
+	   gotoxy(25,3);
+	   box();
+
+	   gotoxy(7,7);
+	   printf("Factura No: ");
+	   printf(" %s",id);
+
+	   gotoxy(7,9);
+	   printf("Nombre Cliente: ");
+
+	   gotoxy(50,7);
+	   printf("FECHA: %s", Fecha);
+	   
+
+	   gotoxy(7,12);
+	   printf("Sr.No   Nombre Medicina       Qty          Rate         Total ");
+	   gotoxy(6,14);
+	   printf("---------------------------------------------------------------------");
+
+	   i=15;
+	   while(fscanf(F_Factura,"%s %s %s %d %f %f %d %d %d",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,&temp_Fac.medi_qty,&temp_Fac.medi_rate,&temp_Fac.total,&temp_Fac.day,&temp_Fac.month,&temp_Fac.year)!=EOF)
+	   {
+
+		       do
+		       {
+			if(strcmp(id,temp_Fac.billno)==0)
+			{
+				gotoxy(7,i);
+				printf(" %d",j);
+				gotoxy(14,i);
+				printf(" %s",temp_Fac.mediname);
+				gotoxy(22,9);
+				printf(" %s",temp_Fac.cname);
+				gotoxy(35,i);
+				printf(" %d",temp_Fac.medi_qty);
+				gotoxy(47,i);
+				printf(" %.2f",temp_Fac.medi_rate);
+				gotoxy(60,i);
+				printf(" %.2f",temp_Fac.total);
+				netamt= netamt + temp_Fac.total;
+				i++;
+				j++;
+				gotoxy(35,32);
+				printf("                                ");
+				gotoxy(20,50);
+				printf("Presione alguna tecla para regresar al MENU ...........");
+			}
+
+
+		}while(feof(F_Factura));
+
+	   }
+	   gotoxy(6,35);
+	   printf("---------------------------------------------------------------------");
+	   gotoxy(50,37);
+	   printf("Cantidad Neto: ");
+	   printf("%.2f",netamt);
+
+	   fclose(F_Factura);
+	   getch();
 
 }
 
