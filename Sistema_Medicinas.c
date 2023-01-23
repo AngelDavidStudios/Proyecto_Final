@@ -1543,6 +1543,109 @@ void medi_entry() {
 }
 
 void medi_sale() {
+
+  	int j,n,i,a,billno;
+  	float b,total,rate;
+  	char tar[30],ch,mediname[30],c_name[30],cname[30];
+  	FILE *fp,*fpc;
+  
+  	int count=0;
+	   ch='y';
+	   while(ch=='y')
+	   {
+		fp = fopen("Factura.dat","a");
+		ptr1 = fopen("Clientes.dat","r");
+		ptr = fopen("Medical.dat","r");
+
+		system("cls");
+
+		box();
+		for(i=3;i<=45;i++)  
+		{                     
+		gotoxy(50,i);
+		printf("%c",219);
+		}
+
+	
+		i=9;
+		gotoxy(52,7);
+		printf("Cli_ID    Cli_Name");
+		while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+		{
+			gotoxy(53,i);
+			printf("%d",temp_cli.cust_id);
+			gotoxy(64,i);
+			printf("%s",temp_cli.cust_name);
+			i+=2;
+		}
+
+		gotoxy(9,7);
+		printf("ENTER MEDICINE ID TO BE SOLD  : ");
+		gets(tar);
+		j=0;
+		while((fread(&temp,sizeof(temp),1,ptr))==1)
+		{
+			if((strcmp(temp.id,tar)<0) || (strcmp(temp.id,tar)>0))
+			{
+				x[j] = temp;
+				j++;
+			}
+			else if((strcmp(temp.id,tar)==0))
+			{
+
+				gotoxy(8,10);
+				printf(" Medicine Name        : %s",temp.medi_name);
+				gotoxy(8,12);
+				printf(" Quantity in stock    : %d",temp.quantity);
+				gotoxy(8,14);
+				printf(" Sales price          : %.2f",temp.sale);
+				gotoxy(8,16);
+				printf("Enter bill number     : ");
+				gets(temp_Fac.billno);
+				gotoxy(8,18);
+				printf("Enter customer Name   : ");
+				gets(c_name);
+				gotoxy(8,20);
+				printf("Quantity want to sale : ");
+				scanf("%d",&a);
+
+				strcpy(temp_Fac.cname,c_name);
+				strcpy(temp_Fac.mediname,temp.medi_name);
+				temp_Fac.medi_qty=a;
+				temp_Fac.medi_rate=temp.sale;
+				temp_Fac.total=temp.sale*a;
+
+				fprintf(fp,"%s %s %s %d %.2f %.2f\n",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,temp_Fac.medi_qty,temp_Fac.medi_rate,temp_Fac.total);
+				fflush(stdin);
+
+				fclose(fp);
+			}
+		}
+		if (count==0)
+		{
+			system("cls");
+			gotoxy(33,10);
+			printf("No existe en Stock!!!!!");
+			getch();
+			return;
+		}
+		fclose(ptr1);
+		fclose(ptr);
+		n = j;
+		system("cls");
+		ptr=fopen("Medical.dat","wb");
+		for(i=0; i<n; i++)
+		fwrite(&x[i],sizeof(x[i]),1,ptr);
+		fclose(ptr);
+		system("cls");
+		box();
+		gotoxy(8,15);
+		printf("* Price paid by customer = %.2f",b);
+		gotoxy(8,17);
+		printf("* Quantity sold          = %d",a);
+		getch();
+		ch=getche();
+	   }
 	
 }
 
@@ -1736,7 +1839,7 @@ void update_stock() {
 		ptr=fopen("Medical.dat","wb");
 	   	for(i=0; i<n; i++)
 	   	fwrite(&x[i],sizeof(x[i]),1,ptr);
-		
+
 	   fclose(ptr);
 
 }
@@ -1795,19 +1898,17 @@ void Bill() {
 	   
 
 	   gotoxy(7,12);
-	   printf("Sr.No   Nombre Medicina       Qty          Rate         Total ");
+	   printf("Sr.No   Nombre Medicina       Cantidad          Rate         Total ");
 	   gotoxy(6,14);
 	   printf("---------------------------------------------------------------------");
 
 	   i=15;
-	   while(fscanf(F_Factura,"%s %s %s %d %f %f %d %d %d",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,&temp_Fac.medi_qty,&temp_Fac.medi_rate,&temp_Fac.total,&temp_Fac.day,&temp_Fac.month,&temp_Fac.year)!=EOF)
+	   
+		while(fscanf(F_Factura,"%s %s %s %d %f %f",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,&temp_Fac.medi_qty,&temp_Fac.medi_rate,&temp_Fac.total)!=EOF)
 	   {
-
-		       do
-		       {
-			if(strcmp(id,temp_Fac.billno)==0)
-			{
-				gotoxy(7,i);
+		if(strcmp(id,temp_Fac.billno)==0)
+		{
+			gotoxy(7,i);
 				printf(" %d",j);
 				gotoxy(14,i);
 				printf(" %s",temp_Fac.mediname);
@@ -1826,10 +1927,7 @@ void Bill() {
 				printf("                                ");
 				gotoxy(20,50);
 				printf("Presione alguna tecla para regresar al MENU ...........");
-			}
-
-
-		}while(feof(F_Factura));
+		}
 
 	   }
 	   gotoxy(6,35);
