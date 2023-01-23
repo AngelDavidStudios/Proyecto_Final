@@ -21,6 +21,7 @@ int i;
 
 int getcust_id();
 int getsupp_id();
+int getmedic_id();
 
 //Tiempo Local
 void t();
@@ -88,7 +89,7 @@ void t()
 //=================================== BASES DE DATOS =========================
 struct medical
 {
-	char id[6];
+	int id;
 	char medi_name[20];
 	int rack;
 	char cabnit[2];
@@ -109,7 +110,7 @@ struct medical
  };
 
 struct medical temp;
-struct medical x[20];
+//struct medical x[20];
 FILE *ptr;
 
 char a[10];
@@ -937,7 +938,6 @@ void Clientes() {
 //========================= Obtener ID Cliente =======================
 int getcust_id()
 {
-
  FILE *fp;
 	 fp= fopen("Clientes.dat","r");
 	 if(fp==NULL)
@@ -950,7 +950,7 @@ int getcust_id()
 	 {
 		temp_cli.cust_id=1000;
 		rewind(fp);
-		while(fscanf(fp,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+		while(fscanf(fp,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no,temp_cli.city,temp_cli.email)!=EOF)
 		{
 		}
 	 }
@@ -1025,7 +1025,7 @@ void cust_entry() {
 		ch=getch();
 		if(ch=='s' || ch=='S')
 		{
-			fprintf(fp,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
+			fprintf(fp,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no,temp_cli.city,temp_cli.email);
 
 			system("cls");
 			gotoxy(20,20);
@@ -1378,33 +1378,60 @@ void Medicinas() {
 	} while(Index!= 6);
 
 }
+
+//========================= Obtener ID Medicinas =======================
+int getmedic_id() {
+
+	FILE *fp;
+	 fp= fopen("Medical.dat","r");
+	 if(fp==NULL)
+	 {
+		gotoxy(22,15);
+		printf("No existen Datos.....");
+		getch();
+	 }
+	 else
+	 {
+		temp.id=100;
+		rewind(fp);
+		while(fscanf(fp,"%d %s %d %s %s %s %f %f %d %s %s",&temp.id,temp.medi_name,&temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, &temp.unit, &temp.sale, &temp.quantity, temp.manu_date, temp.exp_date)!=EOF)
+		{
+		
+		}
+	 }
+	 fclose(fp);
+	 return temp.id+1;
+
+}
 //======================== Submenus =============================
-
 void medi_entry() {
+	char ch;
+ 	FILE *fp;
+ 	system("cls");
 
-	char ch,id[6];
+	   fp=fopen("Medical.dat","a");
 
-	time_t t = time(0);
-    struct tm * now = localtime( & t );
+		if(fp==NULL)
+		{
+			printf("\n No se puede abrir el archivo!!");
+			exit(0);
+		}
 
-  	int f;
-  	FILE *fp;
+	   system("cls");
 
-  	system("cls");
-
-	  ch='Y';
-	  while(ch=='Y')
-	  {
+	   ch='y';
+	   while(ch=='y')
+	   {
 		system("cls");
 
 		box();
 		lbox();
-
 		gotoxy(30,8);
 		printf(" COMPRA MEDICINA  ");
-		{
+
 			gotoxy(7,11);
-			printf("ID MEDICINA    : ");
+			temp.id= getmedic_id();
+			printf("ID MEDICINA    : %d", temp.id);
 
 			gotoxy(40,11);
 			printf("NOMBRE MEDICINA  : ");
@@ -1435,40 +1462,6 @@ void medi_entry() {
 
 			gotoxy(7,29);
 			printf("EXP.DATE(dd-mm-yyyy): ");
-
-			gotoxy(25,11);
-			gets(temp.id);
-			strcpy(id,temp.id);
-
-			fp= fopen("Medical.dat","r");
-
-			while((fread(&temp,sizeof(temp),1,fp))==1)
-			{
-
-			if(strcmp(id,temp.id)==0)
-			{
-				f=1;
-				break;
-			}
-
-			}
-			fclose(fp);
-
-			if(f==1)
-			{
-				gotoxy(20,31);
-				printf("Este ID Ya existe");
-				getche();
-				system("cls");
-				medi_entry();
-			}
-
-			else
-
-			{
-			ptr=fopen("Medical.dat","a+");
-			strcpy(temp.id,id);
-			}
 
 			gotoxy(59,11);
 			gets(temp.medi_name);
@@ -1514,151 +1507,49 @@ void medi_entry() {
 
 			gotoxy(40,33);
 			printf("COSTE TOTAL POR UNIDAD =  %.2f",temp.cost);
-		 }
 
-		gotoxy(21,35);
-		printf("[S] Guardar");
+		 	gotoxy(21,35);
+			printf("[S] Guardar");
 
-		gotoxy(35,35);
-		printf("[C] Cancelar");
+			gotoxy(35,35);
+			printf("[C] Cancelar");
 
-		gotoxy(18,38);
-		printf("Presiona alguna tecla para la operacion : ");
+			gotoxy(18,38);
+			printf("Presiona alguna tecla para la operacion : ");
 
-		ch= toupper(getche());
+			ch= toupper(getche());
 
-			if(ch=='S' || ch=='s')
-			{
-				fwrite(&temp,sizeof(temp),1,ptr);
-				fflush(stdin);				
-				system("cls");
-				
-				gotoxy(20,20);
-				printf("Medicina agregada con exito!!!!!!");
 
-				ch= toupper(getche());
-			}
+		if(ch=='s' || ch=='S')
+		{
+			fprintf(fp, "%d %s %d %s %s %s %f %f %d %s %s\n",temp.id,temp.medi_name,temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, temp.unit, temp.sale, temp.quantity, temp.manu_date, temp.exp_date);
+
+			system("cls");
+
+			gotoxy(20,20);
+			printf("Medicina agregada con exito!!!!!!");
+			ch= toupper(getche());
+		}
 	   }
-	   fclose(ptr);
+	fclose(fp);
 }
 
 void medi_sale() {
 
-  	int j,n,i,a,billno;
-  	float b,total,rate;
-  	char tar[30],ch,mediname[30],c_name[30],cname[30];
-  	FILE *fp,*fpc;
-  
-  	int count=0;
-	   ch='y';
-	   while(ch=='y')
-	   {
-		fp = fopen("Factura.dat","a");
-		ptr1 = fopen("Clientes.dat","r");
-		ptr = fopen("Medical.dat","r");
-
-		system("cls");
-
-		box();
-		for(i=3;i<=45;i++)  
-		{                     
-		gotoxy(50,i);
-		printf("%c",219);
-		}
-
-	
-		i=9;
-		gotoxy(52,7);
-		printf("Cli_ID    Cli_Name");
-		while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
-		{
-			gotoxy(53,i);
-			printf("%d",temp_cli.cust_id);
-			gotoxy(64,i);
-			printf("%s",temp_cli.cust_name);
-			i+=2;
-		}
-
-		gotoxy(9,7);
-		printf("ENTER MEDICINE ID TO BE SOLD  : ");
-		gets(tar);
-		j=0;
-		while((fread(&temp,sizeof(temp),1,ptr))==1)
-		{
-			if((strcmp(temp.id,tar)<0) || (strcmp(temp.id,tar)>0))
-			{
-				x[j] = temp;
-				j++;
-			}
-			else if((strcmp(temp.id,tar)==0))
-			{
-
-				gotoxy(8,10);
-				printf(" Medicine Name        : %s",temp.medi_name);
-				gotoxy(8,12);
-				printf(" Quantity in stock    : %d",temp.quantity);
-				gotoxy(8,14);
-				printf(" Sales price          : %.2f",temp.sale);
-				gotoxy(8,16);
-				printf("Enter bill number     : ");
-				gets(temp_Fac.billno);
-				gotoxy(8,18);
-				printf("Enter customer Name   : ");
-				gets(c_name);
-				gotoxy(8,20);
-				printf("Quantity want to sale : ");
-				scanf("%d",&a);
-
-				strcpy(temp_Fac.cname,c_name);
-				strcpy(temp_Fac.mediname,temp.medi_name);
-				temp_Fac.medi_qty=a;
-				temp_Fac.medi_rate=temp.sale;
-				temp_Fac.total=temp.sale*a;
-
-				fprintf(fp,"%s %s %s %d %.2f %.2f\n",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,temp_Fac.medi_qty,temp_Fac.medi_rate,temp_Fac.total);
-				fflush(stdin);
-
-				fclose(fp);
-			}
-		}
-		if (count==0)
-		{
-			system("cls");
-			gotoxy(33,10);
-			printf("No existe en Stock!!!!!");
-			getch();
-			return;
-		}
-		fclose(ptr1);
-		fclose(ptr);
-		n = j;
-		system("cls");
-		ptr=fopen("Medical.dat","wb");
-		for(i=0; i<n; i++)
-		fwrite(&x[i],sizeof(x[i]),1,ptr);
-		fclose(ptr);
-		system("cls");
-		box();
-		gotoxy(8,15);
-		printf("* Price paid by customer = %.2f",b);
-		gotoxy(8,17);
-		printf("* Quantity sold          = %d",a);
-		getch();
-		ch=getche();
-	   }
-	
 }
 
 void stock() {
 
 	char ch;
 	int i, Index;
+
+	FILE *MedFp;
 	   do
 	   {
 		system("cls");
 
-		ptr1=fopen("Medical.dat","r");
-		if(ptr1==NULL)
+		MedFp=fopen("Medical.dat","r");
+		if(MedFp==NULL)
 		{
 			printf("\n\t Error no se puede abrir el archivo! ");
 			exit(1);
@@ -1668,7 +1559,6 @@ void stock() {
 		box();
 		lbox();
 		gotoxy(30,8);
-
 		printf(" STOCK MEDICINA ");
 		i=14;
 
@@ -1677,10 +1567,10 @@ void stock() {
 		gotoxy(9,12);
 		printf("==================================================================\n");
 
-		while((fread(&temp,sizeof(temp),1,ptr1))==1)
+		while(fscanf(MedFp,"%d %s %d %s %s %s %f %f %d %s %s",&temp.id,temp.medi_name,&temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, &temp.unit, &temp.sale, &temp.quantity, temp.manu_date, temp.exp_date)!=EOF)
 		{
 			gotoxy(9,i);
-			printf(" %s",temp.id);
+			printf(" %d",temp.id);
 			gotoxy(15,i);
 			printf(" %s",temp.medi_name);
 			gotoxy(32,i);
@@ -1697,7 +1587,7 @@ void stock() {
 		switch (Index)
 		{
 			case '0':
-				Main_Menu();
+				Medicinas();
 				 break;
 			case '1':
 				update_stock();
@@ -1710,12 +1600,14 @@ void stock() {
 
 void medi_search(){
 
-	char EnterID[6];
+	int EnterID;
   	int i;
-  	system("cls");
-	   ptr1=fopen("Medical.dat","r");
+	FILE *FileMed;
 
-	   if(ptr1==NULL)
+  	system("cls");
+	   FileMed=fopen("Medical.dat","r");
+
+	   if(FileMed==NULL)
 	   {
 		printf("\n\t Error no se puede abrir el archivo! ");
 		exit(0);
@@ -1726,7 +1618,7 @@ void medi_search(){
 
 	   gotoxy(10,7);
 	   printf("Introduzca el ID de la medicina para buscar : ");
-	   scanf("%s",&EnterID);
+	   scanf("%d",&EnterID);
 
 	   system("cls");
 	   box();
@@ -1740,12 +1632,12 @@ void medi_search(){
 	   printf("ID.   NOMBRE MEDICINA.    QTY     NOMBRE PROVE.     Exp.Fecha");
 	   gotoxy(9,12);
 	   printf("==================================================================\n");
-	   while((fread(&temp,sizeof(temp),1,ptr1))==1)
+	   while(fscanf(FileMed,"%d %s %d %s %s %s %f %f %d %s %s",&temp.id,temp.medi_name,&temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, &temp.unit, &temp.sale, &temp.quantity, temp.manu_date, temp.exp_date)!=EOF)
 	   {
-		if(strcmp(EnterID,temp.id)==0)
+		if(temp.id==EnterID)
 		{
 			gotoxy(9,i);
-			printf(" %s",temp.id);
+			printf(" %d",temp.id);
 			gotoxy(15,i);
 			printf(" %s",temp.medi_name);
 			gotoxy(32,i);
@@ -1759,7 +1651,7 @@ void medi_search(){
 		}
 
 	   }
-	   if(strcmp(EnterID,temp.id)!=0)
+	   if(temp.id!=EnterID)
 	   {
 		gotoxy(20,20);
 		printf("No esta en Stock.....");
@@ -1770,77 +1662,6 @@ void medi_search(){
 //======================Actualizar Stock de medicinas ===============
 void update_stock() {
 	
-	char mid[6];
-  	int j,a,count=0,n;
- 	system("cls");
-
-	   ptr=fopen("medical.dat","rb");
-
-	   if(ptr==NULL)
-	   {
-		printf("\n\t Error, no es posible abrir el archivo! ");
-		exit(0);
-	   }
-
-	   system("cls");
-
-	   box();
-	   gotoxy(20,45);
-	   printf("Presiona Enter para regresar al MENU ...........");
-
-	   gotoxy(27,8);
-	   printf(" ACTUALIZAR LA CANTIDAD DE MEDICINA ");
-	   gotoxy(9,10);
-	   printf("Introduzca ID para actualizar la cantidad: ");
-	   scanf("%s",&mid);
-	   j=0;
-
-	   while((fread(&temp,sizeof(temp),1,ptr))==1)
-	   {
-		if((strcmp(temp.id,mid)<0) || (strcmp(temp.id,mid)>0))
-		{
-			x[j] = temp;
-			j++;
-		}
-		else
-		{
-			gotoxy(8,12);
-			printf("Nombre Medicina     : %s",temp.medi_name);
-			gotoxy(8,14);
-			printf("Cantidad en Stock : %d",temp.quantity);
-			gotoxy(8,16);
-			printf("Cantidad para actualizar : ");
-			scanf("%d",&a);
-
-			x[j]=temp;
-			x[j].quantity=(x[j].quantity+a);
-			x[j].total=(x[j].quantity*temp.sale);
-			x[j].cost=(x[j].quantity*temp.unit);
-			x[j].bye=(x[j].sale*a);
-			x[j].qty=a;
-			j++;
-			count++;
-		}
-	   }
-	   if (count==0)
-	   {
-		 system("cls");
-		 gotoxy(33,10);
-		 printf("No existe en Stock!!!!!!");
-		 getch();
-		 return;
-	   }
-	   fclose(ptr);
-	  n = j;
-	   system("cls");
-	   	
-		gotoxy(33,10);
-		printf("Medicina agregada con exito!!!!!!");
-		ptr=fopen("Medical.dat","wb");
-	   	for(i=0; i<n; i++)
-	   	fwrite(&x[i],sizeof(x[i]),1,ptr);
-
-	   fclose(ptr);
 
 }
 
