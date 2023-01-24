@@ -578,7 +578,7 @@ void sup_update() {
   	system("cls");
   	box();
 
-	   Original= fopen("Proveedor.dat","r+");
+	   Original= fopen("Proveedor.dat","rb+");
 	   if(Original==NULL )
 	   {
 		printf("\n\t Error, no se puede abrir este archivo!! ");
@@ -631,27 +631,27 @@ void sup_update() {
 					gotoxy(20,32);
 					printf("[S] Actualizar");
 
-					gotoxy(40,32);
-					printf("[C] Cancelar");
 
 					gotoxy(18,36);
 					printf("Presione una letra para ejecutar la operacion: ");
 					Index= getch();
 
-					if(Index=='s' || Index == 'S')
+					switch (Index)
 					{
-					    fprintf(Temporal,"%d %s %s %s %s\n\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
+					case 's':
+						fprintf(Temporal,"%d %s %s %s %s\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
 
 						system("cls");
 					    gotoxy(20,25);
 					    printf("Proveedor actualizado con exito...");
-						fclose(Temporal);
-	   					fclose(Original);
-						remove("Proveedor.dat");
-						rename("Temp.dat","Proveedor.dat");
+						//remove("Proveedor.dat");
+						//rename("Temp.dat","Proveedor.dat");
 						Index= getche();
-
-					}			
+						break;
+					
+					default:
+						break;
+					}		
 				}
 			else
 			{
@@ -660,8 +660,10 @@ void sup_update() {
 			}
 		}
 
-	   fclose(Temporal);
-	   fclose(Original);
+	   	fclose(Temporal);
+	   	fclose(Original);
+		remove("Proveedor.dat");
+		rename("Temp.dat","Proveedor.dat");
 	   }
 
 }
@@ -1076,7 +1078,7 @@ void cust_update() {
 				if(temp_cli.cust_id==cid)
 				{
 					gotoxy(25,17);
-					printf("*** Existing Record ***");
+					printf("*** Registro existente ***");
 					gotoxy(10,19);
 					printf("%d\t %s \t%s \t%s \t%s",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
 					
@@ -1099,24 +1101,23 @@ void cust_update() {
 					gotoxy(20,32);
 					printf("[S] Actualizar");
 
-					gotoxy(40,32);
-					printf("[C] Cancelar");
-
 					gotoxy(18,35);
 					printf("Presione una letra para ejecutar la operacion: ");
 					ch=getche();
 
-					if(ch=='s' || ch=='S')
+					switch (ch)
 					{
+					case 's':
 					fprintf(ft,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
 
 					gotoxy(20,36);
-					printf("Customer updated successfully...");
-					fclose(ft);
-	   				fclose(ptr1);
-					remove("Clientes.dat");
-					rename("TempCli.dat","Clientes.dat");
-					}					
+					printf("Cliente actualizado con exito...");
+					ch= getche();
+						break;
+					
+					default:
+						break;
+					}			
 					}
 					else
 					{
@@ -1125,8 +1126,10 @@ void cust_update() {
 					}
 				  }
 
-	   fclose(ft);
-	   fclose(ptr1);
+	   	fclose(ft);
+	   	fclose(ptr1);
+		remove("Clientes.dat");
+		rename("TempCli.dat","Clientes.dat");
       }
 }
 
@@ -1791,8 +1794,8 @@ void update_stock() {
   	FILE *Original;
 	FILE *Temporal;
   
-  	system("cls");
-  	box();
+  		system("cls");
+  		box();
 	   	Original=fopen("Medical.dat","r+");
 
 	   if(Original==NULL)
@@ -1839,41 +1842,40 @@ void update_stock() {
 					gotoxy(20,32);
 					printf("[S] Actualizar");
 
-					gotoxy(40,32);
-					printf("[C] Cancelar");
-
 					gotoxy(18,35);
 					printf("Presione una letra para ejecutar la operacion: ");
 					Index=getche();
 
-					if(Index=='s' || Index=='S')	
+					switch (Index)
 					{
-						temp.quantity = temp.quantity + UpdateQty;
-						temp.total= temp.quantity * temp.sale;
-						temp.cost=(temp.unit*temp.quantity);
+					case 's':
+					temp.quantity = temp.quantity + UpdateQty;
+					temp.total= temp.quantity * temp.sale;
+					temp.cost=(temp.unit*temp.quantity);
 
-						fprintf(Temporal,"%d %s %d %s %s %s %f %f %d %s %s\n",temp.id,temp.medi_name,temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, temp.unit, temp.sale, temp.quantity, temp.manu_date, temp.exp_date);
+					fprintf(Temporal,"%d %s %d %s %s %s %f %f %d %s %s\n",temp.id,temp.medi_name,temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, temp.unit, temp.sale, temp.quantity, temp.manu_date, temp.exp_date);
 
-						system("cls");
-						gotoxy(25,25);
-						printf("Medicina actualizada con exito...");
-
-						fclose(Original);
-						fclose(Temporal);
-
-						remove("Medical.dat");
-						rename("TempMedi.dat","Medical.dat");
-						//Index= getche();
-					}					
+					system("cls");
+					gotoxy(25,25);
+					printf("Medicina actualizada con exito...");
+					Index= getche();
+					break;
+					
+					default:
+						break;
+					}
+					}
 					else
 					{
 					fprintf(Temporal,"%d %s %d %s %s %s %f %f %d %s %s\n",temp.id,temp.medi_name,temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, temp.unit, temp.sale, temp.quantity, temp.manu_date, temp.exp_date);
 					fflush(stdin);
-					}
+					
 				}
 			}
 		fclose(Temporal);
 		fclose(Original);
+		remove("Medical.dat");
+		rename("TempMedi.dat","Medical.dat");
 		}	
 }
 
