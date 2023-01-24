@@ -47,7 +47,7 @@ void medi_sale();
 void stock();
 void medi_entry();
 void medi_search();
-//void update_stock();
+void update_stock();
 void Remain();
 
 //Subemnu de proovedores
@@ -320,6 +320,7 @@ int main()
     Welcome();
     Main_Menu();
 }
+
 
 void Main_Menu() {
     int Indice;
@@ -1602,11 +1603,11 @@ void medi_sale() {
 					gotoxy(10,32);
 					printf("[Y] Aceptar");
 
-					gotoxy(20,32);
+					gotoxy(23,32);
 					printf("[C] Cancelar");
 
-					gotoxy(10,35);
-					printf("Presione una letra para ejecutar la operacion: ");
+					gotoxy(8,35);
+					printf("Presione una letra para ejecutar:");
 					Index=getche();
 
 					if (Index=='y' || Index=='Y')
@@ -1642,7 +1643,7 @@ void medi_sale() {
 		printf("Venta realizada con exito...");
 		gotoxy(20,30);
 		printf("Medicina [%s] restante: %d", temp.medi_name, temp.quantity);
-		
+
 		getche();
 		Index=getche();
 		
@@ -1700,7 +1701,7 @@ void stock() {
 			i++;
 		}
 		gotoxy(10,42);
-		printf("Presiona [0] para regresar al Menu ");
+		printf("Presiona [1] para actualizar Stock, [0] para regresar al Menu ");
 		Index = (getche());
 		switch (Index)
 		{
@@ -1708,10 +1709,10 @@ void stock() {
 				Medicinas();
 				fclose(MedFp);				
 				 break;
-			/*case '1':
+			case '1':
 				fclose(MedFp);
 				update_stock();
-				 break; */
+				 break;
 		}
 
 	   }while(Index != '1');
@@ -1779,9 +1780,9 @@ void medi_search(){
 	   getche();
 
 }
-/*
+
 //======================Actualizar Stock de medicinas ===============
-//=======================================
+
 void update_stock() {
 	
 	int EnterID;
@@ -1875,14 +1876,14 @@ void update_stock() {
 		fclose(Original);
 		}	
 }
-//=========================================
-*/
+
 //======================Recordatorio Stock de medicinas ===============
 void Remain()
 {
-	ptr1=fopen("Medical.dat","r");
+	FILE *Medical;
+	Medical=fopen("Medical.dat","r");
 
-	while((fread(&temp,sizeof(temp),1,ptr1))==1)
+	while(fscanf(Medical,"%d %s %d %s %s %s %f %f %d %s %s",&temp.id,temp.medi_name,&temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, &temp.unit, &temp.sale, &temp.quantity, temp.manu_date, temp.exp_date)!=EOF)
 	{
 		if(temp.quantity<10)
 		{
@@ -1891,6 +1892,7 @@ void Remain()
 			printf("Recordatorio importante: Quedan en stock 10");
 		}
 	}
+	fclose(Medical);
 }
 
 //======================== Submenu Facturas =============================
