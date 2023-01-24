@@ -644,7 +644,6 @@ void sup_update() {
 					    fprintf(Temporal,"%d %s %s %s %s\n\n",temp1.supp_id,temp1.supp_name,temp1.mob_no,temp1.city,temp1.email);
 
 						system("cls");
-
 					    gotoxy(20,25);
 					    printf("Proveedor actualizado con exito...");
 						fclose(Temporal);
@@ -1118,7 +1117,8 @@ void cust_update() {
 	   				fclose(ptr1);
 					remove("Clientes.dat");
 					rename("TempCli.dat","Clientes.dat");
-					}					}
+					}					
+					}
 					else
 					{
 					fprintf(ft,"%d %s %s %s %s\n",temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email);
@@ -1582,16 +1582,18 @@ void stock() {
 			i++;
 		}
 		gotoxy(10,42);
-		printf("Presiona [1] para actualizar stock & [0] para regresar al Menu ");
+		printf("Presiona [0] para regresar al Menu ");
 		Index = (getche());
 		switch (Index)
 		{
 			case '0':
 				Medicinas();
+				fclose(MedFp);				
 				 break;
-			case '1':
+			/*case '1':
+				fclose(MedFp);
 				update_stock();
-				 break;
+				 break; */
 		}
 
 	   }while(Index != '1');
@@ -1659,12 +1661,104 @@ void medi_search(){
 	   getche();
 
 }
+/*
 //======================Actualizar Stock de medicinas ===============
+//=======================================
 void update_stock() {
 	
+	int EnterID;
+	int UpdateQty;
+  	char Index;
+  	FILE *Original;
+	FILE *Temporal;
+  
+  	system("cls");
+  	box();
+	   	Original=fopen("Medical.dat","r+");
 
+	   if(Original==NULL)
+	   {
+		printf("\n\t Este archivo no se puede abrir!! ");
+		exit(0);
+	   }
+
+	   box();
+	   gotoxy(20,45);
+	   printf("Presiona Enter para regresar al MENU ...........");
+
+	   gotoxy(27,8);
+	   printf(" ACTUALIZAR LA CANTIDAD DE MEDICINA ");
+	   gotoxy(9,10);
+	   
+	   printf("Introduzca ID para actualizar la cantidad: ");
+	   scanf("%d",&EnterID);
+
+	   gotoxy(12,15);
+	   Temporal=fopen("TempMedi.dat","w");
+
+		if(Temporal==NULL)
+		{
+			printf("\n Este archivo no se puede abrir");
+			exit(0);
+		}
+		else
+		{
+			while(fscanf(Original,"%d %s %d %s %s %s %f %f %d %s %s",&temp.id,temp.medi_name,&temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, &temp.unit, &temp.sale, &temp.quantity, temp.manu_date, temp.exp_date)!=EOF)
+			{
+				if(temp.id==EnterID)
+				{
+					gotoxy(8,12);
+					printf("Nombre Medicina     : %s",temp.medi_name);
+
+					gotoxy(8,14);
+					printf("Cantidad en Stock : %d",temp.quantity);
+
+					gotoxy(8,16);
+					printf("Cantidad para actualizar : ");
+					scanf("%d",&UpdateQty);
+
+					gotoxy(20,32);
+					printf("[S] Actualizar");
+
+					gotoxy(40,32);
+					printf("[C] Cancelar");
+
+					gotoxy(18,35);
+					printf("Presione una letra para ejecutar la operacion: ");
+					Index=getche();
+
+					if(Index=='s' || Index=='S')	
+					{
+						temp.quantity = temp.quantity + UpdateQty;
+						temp.total= temp.quantity * temp.sale;
+						temp.cost=(temp.unit*temp.quantity);
+
+						fprintf(Temporal,"%d %s %d %s %s %s %f %f %d %s %s\n",temp.id,temp.medi_name,temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, temp.unit, temp.sale, temp.quantity, temp.manu_date, temp.exp_date);
+
+						system("cls");
+						gotoxy(25,25);
+						printf("Medicina actualizada con exito...");
+
+						fclose(Original);
+						fclose(Temporal);
+
+						remove("Medical.dat");
+						rename("TempMedi.dat","Medical.dat");
+						//Index= getche();
+					}					
+					else
+					{
+					fprintf(Temporal,"%d %s %d %s %s %s %f %f %d %s %s\n",temp.id,temp.medi_name,temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, temp.unit, temp.sale, temp.quantity, temp.manu_date, temp.exp_date);
+					fflush(stdin);
+					}
+				}
+			}
+		fclose(Temporal);
+		fclose(Original);
+		}	
 }
-
+//=========================================
+*/
 //======================Recordatorio Stock de medicinas ===============
 void Remain()
 {
