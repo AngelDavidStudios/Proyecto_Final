@@ -47,7 +47,7 @@ void medi_sale();
 void stock();
 void medi_entry();
 void medi_search();
-void update_stock();
+//void update_stock();
 void Remain();
 
 //Subemnu de proovedores
@@ -139,15 +139,12 @@ FILE *ptr1;
 
 struct Factura
 {
-	char billno[6];
+	int billno;
 	char cname[30];
 	char mediname[30];
 	int medi_qty;
 	float medi_rate;
 	float total;
-	int day;
-	int month;
-	int year;
 
 };
 struct Factura temp_Fac;
@@ -477,6 +474,7 @@ int getsupp_id()
 
  FILE *fp;
 	 fp= fopen("Proveedor.dat","r");
+
 	 if(fp==NULL)
 	 {
 		gotoxy(22,15);
@@ -1536,7 +1534,123 @@ void medi_entry() {
 
 void medi_sale() {
 
-}
+	int i,a;
+  	float b,total,rate;
+	char Index;
+	int EnterID;
+	int IDFact;
+	char NameCli[30];
+
+
+  	FILE *Facture;
+  
+	   Index='y';
+	   while(Index=='y')
+	   {
+		Facture = fopen("Factura.dat","a");
+		ptr1 = fopen("Clientes.dat","r");
+		ptr = fopen("Medical.dat","r+");
+
+		system("cls");
+
+		box();
+		for(i=3;i<=45;i++)  
+		{                     
+		gotoxy(50,i);
+		printf("%c",219);
+		}
+	
+		i=9;
+		gotoxy(52,7);
+		printf("Cli_ID    Cli_Name");
+		while(fscanf(ptr1,"%d %s %s %s %s",&temp_cli.cust_id,temp_cli.cust_name,temp_cli.mob_no, temp_cli.city,temp_cli.email)!=EOF)
+		{
+			gotoxy(53,i);
+			printf("%d",temp_cli.cust_id);
+			gotoxy(64,i);
+			printf("%s",temp_cli.cust_name);
+			i+=2;
+		}
+
+		gotoxy(9,7);
+		printf("INTRODUZCA EL ID  : ");
+		scanf("%d",&EnterID);
+
+			while (fscanf(ptr,"%d %s %d %s %s %s %f %f %d %s %s",&temp.id,temp.medi_name,&temp.rack,temp.cabnit,temp.comp_name,temp.supp_name, &temp.unit, &temp.sale, &temp.quantity, temp.manu_date, temp.exp_date)!= EOF)
+			{
+					if (temp.id==EnterID)
+			{
+					gotoxy(8,10);
+					printf(" Nombre Medicina        : %s",temp.medi_name);
+					gotoxy(8,12);
+					printf(" Cantidad en Stock    : %d",temp.quantity);
+					gotoxy(8,14);
+					printf(" Precio Venta          : %.2f",temp.sale);
+
+					gotoxy(8,16);
+					printf("Introduzca # de factrura     : ");
+					scanf("%d", &IDFact);
+					
+					gotoxy(8,18);
+					printf("Introduzca nombre del cliente   : ");
+					scanf("%s", NameCli);
+
+					gotoxy(8,20);
+					printf("Cantidad para vender: ");
+					scanf("%d",&a);
+					
+					gotoxy(10,32);
+					printf("[Y] Aceptar");
+
+					gotoxy(20,32);
+					printf("[C] Cancelar");
+
+					gotoxy(10,35);
+					printf("Presione una letra para ejecutar la operacion: ");
+					Index=getche();
+
+					if (Index=='y' || Index=='Y')
+					{
+					temp_Fac.billno = IDFact;
+					strcpy(temp_Fac.cname,NameCli);
+					strcpy(temp_Fac.mediname, temp.medi_name);
+					temp_Fac.medi_qty= a;
+					temp_Fac.medi_rate= temp.sale;
+					temp_Fac.total= temp.sale * a;
+					temp.quantity = temp.quantity - a;
+
+					fprintf(Facture,"%d %s %s %d %f %f\n",temp_Fac.billno, temp_Fac.cname, temp_Fac.mediname, temp_Fac.medi_qty, temp_Fac.medi_rate, temp_Fac.total);
+
+
+					fclose(Facture);
+	   				fclose(ptr1);
+					} else
+					{
+					fprintf(Facture,"%d %s %s %d %f %f\n",temp_Fac.billno, temp_Fac.cname, temp_Fac.mediname, temp_Fac.medi_qty, temp_Fac.medi_rate, temp_Fac.total);
+					fflush(stdin);
+					}
+			}	
+			
+			}
+
+		system("cls");
+		box();
+
+		gotoxy(8,17);
+		printf("* Cantidad vendida= %d",a);
+		gotoxy(20,25);
+		printf("Venta realizada con exito...");
+		gotoxy(20,30);
+		printf("Medicina [%s] restante: %d", temp.medi_name, temp.quantity);
+		
+		getche();
+		Index=getche();
+		
+	   }
+	   	fclose(Facture);
+		fclose(ptr1);
+		fclose(ptr);
+	}
 
 void stock() {
 
@@ -1571,12 +1685,16 @@ void stock() {
 		{
 			gotoxy(9,i);
 			printf(" %d",temp.id);
+
 			gotoxy(15,i);
 			printf(" %s",temp.medi_name);
+
 			gotoxy(32,i);
 			printf(" %d",temp.quantity);
+
 			gotoxy(43,i);
 			printf(" %s",temp.supp_name);
+
 			gotoxy(60,i);
 			printf(" %s",temp.exp_date);
 			i++;
@@ -1786,7 +1904,7 @@ void Bill() {
     	int EstructuraFecha = strftime(Fecha, sizeof Fecha, FormatoFecha, &tiempoLocal);
 
 	   FILE *F_Factura;
-	   char id[6];
+	   int ID;
 	   int j=1,d1,m,y,k;
 	   float netamt=0.0;
 
@@ -1795,7 +1913,7 @@ void Bill() {
 
 	   gotoxy(13,4);
 	   printf("Introduzca No Factura: ");
-	   scanf("%s",&id);
+	   scanf("%s",&ID);
 
 	   system("cls");
 	   gotoxy(25,3);
@@ -1803,7 +1921,7 @@ void Bill() {
 
 	   gotoxy(7,7);
 	   printf("Factura No: ");
-	   printf(" %s",id);
+	   printf(" %s",ID);
 
 	   gotoxy(7,9);
 	   printf("Nombre Cliente: ");
@@ -1819,9 +1937,9 @@ void Bill() {
 
 	   i=15;
 	   
-		while(fscanf(F_Factura,"%s %s %s %d %f %f",temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,&temp_Fac.medi_qty,&temp_Fac.medi_rate,&temp_Fac.total)!=EOF)
+		while(fscanf(F_Factura,"%d %s %s %d %f %f",&temp_Fac.billno,temp_Fac.cname,temp_Fac.mediname,&temp_Fac.medi_qty,&temp_Fac.medi_rate,&temp_Fac.total)!=EOF)
 	   {
-		if(strcmp(id,temp_Fac.billno)==0)
+		if(temp_Fac.billno == ID)
 		{
 			gotoxy(7,i);
 				printf(" %d",j);
