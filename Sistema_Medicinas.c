@@ -1915,7 +1915,7 @@ void Bill() {
 
 	   gotoxy(13,4);
 	   printf("Introduzca No Factura: ");
-	   scanf("%s",&ID);
+	   scanf("%d",&ID);
 
 	   system("cls");
 	   gotoxy(25,3);
@@ -1923,7 +1923,7 @@ void Bill() {
 
 	   gotoxy(7,7);
 	   printf("Factura No: ");
-	   printf(" %s",ID);
+	   printf(" %d",ID);
 
 	   gotoxy(7,9);
 	   printf("Nombre Cliente: ");
@@ -1962,7 +1962,7 @@ void Bill() {
 				printf("                                ");
 				gotoxy(20,50);
 				printf("Presione alguna tecla para regresar al MENU ...........");
-		}
+		} 
 
 	   }
 	   gotoxy(6,35);
