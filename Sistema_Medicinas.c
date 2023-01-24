@@ -7,6 +7,7 @@
 //#include<ctype.h>
 #include<windows.h>
 
+
 COORD coord = {0, 0};
 
 void gotoxy(int x, int y)
@@ -316,6 +317,7 @@ void Main_box()
 int main()
 {
 	system("cls");
+	system("color 70");
 
     Welcome();
     Main_Menu();
