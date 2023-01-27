@@ -1,10 +1,7 @@
 #include<stdio.h>
 #include<conio.h>
-//#include<string.h>
 #include<math.h>
-//#include<dos.h>
 #include<time.h>
-//#include<ctype.h>
 #include<windows.h>
 
 
@@ -317,7 +314,8 @@ void Main_box()
 int main()
 {
 	system("cls");
-	system("color 70");
+	system("color f0");
+	system("title UMBRELLA CORP SYSTEM");
 
     Welcome();
     Main_Menu();
@@ -1915,6 +1913,7 @@ void Bill() {
 	   float netamt=0.0;
 
 	   system("cls");
+	   
 	   F_Factura=fopen("Factura.dat","r");
 
 	   gotoxy(13,4);
